@@ -90,8 +90,8 @@
                         <a href="{{ route('staff.index') }}" wire:navigate class="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-700">Cancel</a>
                         
                         <button type="submit" wire:loading.attr="disabled" class="rounded-md bg-indigo-600 px-6 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <span wire:loading.remove wire:target="update" class="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-100">Update Staff Member</span>
-                            <span wire:loading wire:target="update" class="text-sm font-semibold leading-6 text-gray-900 hover:text-gray-100">Updating...</span>
+                            <span wire:loading.remove wire:target="update" class="text-sm font-semibold leading-6 text-white hover:text-gray-100">Update Staff Member</span>
+                            <span wire:loading wire:target="update" class="text-sm font-semibold leading-6 text-white hover:text-gray-100">Updating...</span>
                         </button>
                     </div>
                 </form>
