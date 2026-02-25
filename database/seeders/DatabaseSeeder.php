@@ -19,9 +19,10 @@ class DatabaseSeeder extends Seeder
 
         // --- 2. ADMIN USER ---
         $adminUser = User::firstOrCreate( 
-            ['email' => 'mrhyder29@school.com'], 
+            ['username' => 'admin'],
             [
                 'name' => 'Haider',
+                'email' => 'mrhyder29@school.com',
                 'password' => Hash::make('password'),
             ]
         );
@@ -82,14 +83,14 @@ class DatabaseSeeder extends Seeder
 
         // --- 5. FAKE STUDENTS ---
         
-        $computerClass = Classes::where('name', '10th')
-                        ->where('description', 'Computer Science Group')
-                        ->first();
-        if ($computerClass) {
-            StudentProfile::factory(5)->create([
-                'class_id' => $computerClass->id,
-            ]);
-        }
+        // $computerClass = Classes::where('name', '10th')
+        //                 ->where('description', 'Computer Science Group')
+        //                 ->first();
+        // if ($computerClass) {
+        //     StudentProfile::factory(5)->create([
+        //         'class_id' => $computerClass->id,
+        //     ]);
+        // }
         
     }
 }

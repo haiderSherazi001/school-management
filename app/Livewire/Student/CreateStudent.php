@@ -6,8 +6,10 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\Classes;
+use App\Models\StudentProfile;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Carbon\Carbon;
 
 #[Layout('layouts.app')]
 class CreateStudent extends Component
@@ -18,13 +20,12 @@ class CreateStudent extends Component
 
     // Academic Details
     public $class_id = '';
-    public $roll_number = '';
     public $admission_date = '';
 
     // Personal Details
     public $cnic = '';
     public $date_of_birth = '';
-    public $gender = 'Male';
+    public $gender = 'male';
     public $blood_group = '';
     public $personal_phone = '';
     public $personal_email = '';
@@ -39,9 +40,8 @@ class CreateStudent extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
+            'email' => 'nullable|email', 
             'class_id' => 'required|exists:classes,id',
-            'roll_number' => 'required|string|unique:student_profiles,roll_number',
             'admission_date' => 'required|date',
             'cnic' => 'required|string|unique:student_profiles,cnic',
             'date_of_birth' => 'required|date',
@@ -55,21 +55,31 @@ class CreateStudent extends Component
             'guardian_email' => 'nullable|email',
         ]);
 
-        // 1. Create the Login Account
+        // 1. Auto-Generate the Roll Number (e.g., STD-2026-00001)
+        $latestProfile = StudentProfile::latest('id')->first();
+        $nextId = $latestProfile ? $latestProfile->id + 1 : 1;
+        $generatedRollNumber = 'STD-' . date('Y') . '-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
+
+        // 2. Auto-Generate Password based on Date of Birth (e.g., dob-20150825)
+        $cleanDob = Carbon::parse($this->date_of_birth)->format('Ymd');
+        $generatedPassword = 'dob-' . $cleanDob;
+
+        // 3. Create the Login Account (Username = Roll Number)
         $user = User::create([
             'name' => $this->name,
-            'email' => $this->email,
-            'password' => Hash::make('password123')
+            'username' => $generatedRollNumber,
+            'email' => $this->email ?: null,
+            'password' => Hash::make($generatedPassword), 
         ]);
 
-        // 2. Assign the Spatie Role
+        // 4. Assign the Spatie Role
         $role = Role::firstOrCreate(['name' => 'Student']);
         $user->assignRole($role);
 
-        // 3. Create the massive Student Profile
+        // 5. Create the Student Profile
         $user->studentProfile()->create([
             'class_id' => $this->class_id,
-            'roll_number' => $this->roll_number,
+            'roll_number' => $generatedRollNumber, 
             'admission_date' => $this->admission_date,
             'cnic' => $this->cnic,
             'date_of_birth' => $this->date_of_birth,
@@ -83,7 +93,7 @@ class CreateStudent extends Component
             'address' => $this->address,
         ]);
 
-        session()->flash('success', 'Student admitted successfully!');
+        session()->flash('success', "Student admitted successfully! Login Username: {$generatedRollNumber} | Password: {$generatedPassword}");
 
         return $this->redirectRoute('students.index', navigate: true);
     }

@@ -11,6 +11,7 @@ class EditStaff extends Component
     public User $staff; 
 
     public $name = '';
+    public $username = '';
     public $email = '';
     public $cnic = '';
     public $designation = '';
@@ -26,6 +27,7 @@ class EditStaff extends Component
         $this->staff = $staff;
 
         $this->name = $staff->name;
+        $this->username = $staff->username;
         $this->email = $staff->email;
 
         $profile = $staff->staffProfile;
@@ -45,7 +47,7 @@ class EditStaff extends Component
     {
         $this->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->staff->id,
+            'email' => 'nullable|email|unique:users,email,' . $this->staff->id,
             'cnic' => 'required|string|max:13|unique:staff_profiles,cnic,' . $this->staff->staffProfile->id,
             'designation' => 'required|string',
             'qualification' => 'required|string',
@@ -58,7 +60,7 @@ class EditStaff extends Component
 
         $this->staff->update([
             'name' => $this->name,
-            'email' => $this->email,
+            'email' => $this->email ?: null,
         ]);
 
         $this->staff->staffProfile()->update([

@@ -12,8 +12,9 @@
                 <form wire:submit="save">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                         
-                        <div class="col-span-2 border-b border-gray-200 pb-2">
+                        <div class="col-span-2 border-b border-gray-200 pb-2 flex justify-between items-end">
                             <h3 class="text-lg font-semibold text-gray-900">Academic Information</h3>
+                            <span class="text-xs text-indigo-600 font-medium bg-indigo-50 px-2 py-1 rounded">Roll No. & Login Auto-Generated</span>
                         </div>
 
                         <div>
@@ -25,12 +26,6 @@
                                 @endforeach
                             </select>
                             @error('class_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Roll Number</label>
-                            <input type="text" wire:model="roll_number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            @error('roll_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
                         <div>
@@ -50,7 +45,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">System Login Email</label>
+                            <label class="block text-sm font-medium text-gray-700">Email</label>
                             <input type="email" wire:model="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>

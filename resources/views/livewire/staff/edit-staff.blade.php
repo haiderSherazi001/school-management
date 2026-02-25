@@ -12,8 +12,9 @@
                 <form wire:submit="update">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
-                        <div class="col-span-2 border-b pb-2 mb-2">
+                        <div class="col-span-2 border-b pb-2 mb-2 flex justify-between items-end">
                             <h3 class="text-lg font-medium text-gray-900">Account Details</h3>
+                            <span class="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded">System ID Locked</span>
                         </div>
 
                         <div>
@@ -23,9 +24,15 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <label class="block text-sm font-medium text-gray-700">Contact Email (Optional)</label>
                             <input type="email" wire:model="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="col-span-2">
+                            <label class="block text-sm font-medium text-gray-700">Staff ID / Username</label>
+                            <input type="text" wire:model="username" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm cursor-not-allowed">
+                            <p class="mt-1 text-xs text-gray-500">This is the staff member's login credential and cannot be changed.</p>
                         </div>
 
                         <div class="col-span-2 border-b pb-2 mb-2 mt-4">

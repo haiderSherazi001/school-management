@@ -10,11 +10,11 @@ use App\Models\Classes;
 #[Layout('layouts.app')]
 class EditStudent extends Component
 {
-    public User $student;
+    public User $student; 
 
     // Base User Details
     public $name = '';
-    public $email = '';
+    public $email = ''; 
 
     // Academic Details
     public $class_id = '';
@@ -39,9 +39,11 @@ class EditStudent extends Component
     {
         $this->student = $student;
 
+        // Pre-fill base User details
         $this->name = $student->name;
         $this->email = $student->email;
 
+        // Pre-fill Profile details
         $profile = $student->studentProfile;
         if ($profile) {
             $this->class_id = $profile->class_id;
@@ -66,9 +68,8 @@ class EditStudent extends Component
 
         $this->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->student->id,
+            'email' => 'nullable|email|unique:users,email,' . $this->student->id,
             'class_id' => 'required|exists:classes,id',
-            'roll_number' => 'required|string|unique:student_profiles,roll_number,' . $profileId,
             'cnic' => 'required|string|unique:student_profiles,cnic,' . $profileId,
             'admission_date' => 'required|date',
             'date_of_birth' => 'required|date',
@@ -82,16 +83,15 @@ class EditStudent extends Component
             'guardian_email' => 'nullable|email',
         ]);
 
-        // Update the base User account
+        // Update User (Notice we do NOT update username/password here)
         $this->student->update([
             'name' => $this->name,
-            'email' => $this->email,
+            'email' => $this->email ?: null,
         ]);
 
-        // Update the linked Student Profile
+        // Update Profile (Notice we do NOT update roll_number here)
         $this->student->studentProfile()->update([
             'class_id' => $this->class_id,
-            'roll_number' => $this->roll_number,
             'admission_date' => $this->admission_date,
             'cnic' => $this->cnic,
             'date_of_birth' => $this->date_of_birth,

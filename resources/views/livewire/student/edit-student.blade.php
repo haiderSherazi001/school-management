@@ -12,8 +12,9 @@
                 <form wire:submit="update">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
                         
-                        <div class="col-span-2 border-b border-gray-200 pb-2">
+                        <div class="col-span-2 border-b border-gray-200 pb-2 flex justify-between items-end">
                             <h3 class="text-lg font-semibold text-gray-900">Academic Information</h3>
+                            <span class="text-xs text-gray-500 font-medium bg-gray-100 px-2 py-1 rounded">System ID Locked</span>
                         </div>
 
                         <div>
@@ -28,9 +29,9 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Roll Number</label>
-                            <input type="text" wire:model="roll_number" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            @error('roll_number') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <label class="block text-sm font-medium text-gray-700">Roll Number / Username</label>
+                            <input type="text" wire:model="roll_number" disabled class="mt-1 block w-full rounded-md border-gray-300 bg-gray-100 text-gray-500 shadow-sm cursor-not-allowed">
+                            <p class="mt-1 text-xs text-gray-500">This is the student's login credential and cannot be changed.</p>
                         </div>
 
                         <div>
@@ -50,7 +51,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">System Login Email</label>
+                            <label class="block text-sm font-medium text-gray-700">Contact Email (Optional)</label>
                             <input type="email" wire:model="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
