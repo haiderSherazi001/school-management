@@ -12,8 +12,9 @@ use Livewire\Form;
 
 class LoginForm extends Form
 {
-    #[Validate('required|string|email')]
-    public string $email = '';
+    // 1. Changed property and removed the 'email' validation rule
+    #[Validate('required|string')]
+    public string $username = '';
 
     #[Validate('required|string')]
     public string $password = '';
@@ -30,11 +31,13 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
+        // 2. Changed to check 'username' against the database
+        if (! Auth::attempt($this->only(['username', 'password']), $this->remember)) {
             RateLimiter::hit($this->throttleKey());
 
+            // 3. Changed the error bag key to match the frontend wire:model
             throw ValidationException::withMessages([
-                'form.email' => trans('auth.failed'),
+                'form.username' => trans('auth.failed'),
             ]);
         }
 
@@ -54,8 +57,9 @@ class LoginForm extends Form
 
         $seconds = RateLimiter::availableIn($this->throttleKey());
 
+        // 4. Changed the throttle error key
         throw ValidationException::withMessages([
-            'form.email' => trans('auth.throttle', [
+            'form.username' => trans('auth.throttle', [
                 'seconds' => $seconds,
                 'minutes' => ceil($seconds / 60),
             ]),
@@ -67,6 +71,7 @@ class LoginForm extends Form
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
+        // 5. Rate limit based on the username being typed
+        return Str::transliterate(Str::lower($this->username).'|'.request()->ip());
     }
 }

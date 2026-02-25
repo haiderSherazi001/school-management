@@ -12,8 +12,9 @@
                 <form wire:submit="save">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         
-                        <div class="col-span-2 border-b pb-2 mb-2">
+                        <div class="col-span-2 border-b pb-2 mb-2 flex justify-between items-end">
                             <h3 class="text-lg font-medium text-gray-900">Account Details</h3>
+                            <span class="text-xs text-indigo-600 font-medium bg-indigo-50 px-2 py-1 rounded">Staff ID & Login Auto-Generated</span>
                         </div>
 
                         <div>
@@ -23,7 +24,7 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Email Address</label>
+                            <label class="block text-sm font-medium text-gray-700">Contact Email (Optional)</label>
                             <input type="email" wire:model="email" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @error('email') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
