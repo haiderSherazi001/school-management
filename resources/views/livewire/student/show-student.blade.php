@@ -113,6 +113,7 @@
                 </div>
 
             </div>
+            <livewire:shared.document-manager :model="$student->studentProfile" />
         </div>
     </div>
 </div>

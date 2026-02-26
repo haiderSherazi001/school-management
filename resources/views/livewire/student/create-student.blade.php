@@ -74,7 +74,17 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Blood Group (Optional)</label>
-                            <input type="text" wire:model="blood_group" placeholder="e.g., O+" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <select wire:model="blood_group" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">-- Select Blood Group --</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
                             @error('blood_group') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
@@ -90,7 +100,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Guardian Phone</label>
-                            <input type="text" wire:model="guardian_phone" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <input placeholder="03XXXXXXXXX" type="text" wire:model="guardian_phone" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @error('guardian_phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 

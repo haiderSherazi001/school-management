@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Classes;
 use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Document;
 
 class StudentProfile extends Model
 {
@@ -21,11 +22,15 @@ class StudentProfile extends Model
     'guardian_email', 'address'
 ];
 
-public function user() {
-    return $this->belongsTo(User::class);
-}
+    public function user() {    
+        return $this->belongsTo(User::class);
+    }
 
-public function class() {
-    return $this->belongsTo(Classes::class, 'class_id');
-}
+    public function class() {
+        return $this->belongsTo(Classes::class, 'class_id');
+    }
+
+    public function documents() {
+        return $this->morphMany(Document::class, 'documentable');
+    }
 }

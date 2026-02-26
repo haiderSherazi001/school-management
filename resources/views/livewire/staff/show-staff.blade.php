@@ -95,6 +95,7 @@
                 </div>
 
             </div>
+            <livewire:shared.document-manager :model="$staff->staffProfile" />
         </div>
     </div>
 </div>
