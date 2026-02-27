@@ -43,7 +43,7 @@ class StudentDirectory extends Component
                                    ->orWhere('guardian_name', 'like', '%' . $this->search . '%');
                       });
             })
-            ->with(['studentProfile.class']) 
+            ->with(['studentProfile', 'enrollments.academicClass']) 
             ->paginate(10);
 
         return view('livewire.student.student-directory', [

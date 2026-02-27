@@ -41,7 +41,7 @@
                 </div>
                 
                 <a href="{{ route('students.create') }}" wire:navigate class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
-                    + Admit New Student
+                    + Add New Student
                 </a>
             </div>
 
@@ -50,6 +50,7 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Info</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Academic</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guardian</th>
@@ -63,6 +64,9 @@
                             
                             @forelse ($students as $student)
                                 <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $students->firstItem() + $loop->index }}
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="{{ route('students.show', $student->id) }}" wire:navigate class="text-sm font-bold text-indigo-600 hover:text-indigo-900 hover:underline transition">
                                             {{ $student->name }}
@@ -72,9 +76,9 @@
                                     
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900 font-semibold">
-                                            {{ $student->studentProfile->class->name ?? 'Unassigned' }} 
-                                            @if($student->studentProfile?->class?->description)
-                                                <span class="text-xs text-gray-500 font-normal">({{ $student->studentProfile->class->description }})</span>
+                                            {{ $student->currentClass()?->name ?? 'Unassigned' }} 
+                                            @if($student->currentClass()?->description)
+                                                <span class="text-xs text-gray-500 font-normal">({{ $student->currentClass()->description }})</span>
                                             @endif
                                         </div>
                                         <div class="text-sm text-gray-500">Roll: {{ $student->studentProfile->roll_number ?? 'N/A' }}</div>
@@ -102,9 +106,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-8 whitespace-nowrap text-center">
+                                    <td colspan="6" class="px-6 py-8 whitespace-nowrap text-center">
                                         <div class="text-gray-500 text-sm">No students found in the database.</div>
-                                        <div class="text-gray-400 text-xs mt-1">Click the "Admit New Student" button to start enrollment!</div>
+                                        <div class="text-gray-400 text-xs mt-1">Click the "Add New Student" button to start enrollment!</div>
                                     </td>
                                 </tr>
                             @endforelse

@@ -55,6 +55,7 @@
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name & Email</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Designation & CNIC</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Phone</th>
@@ -68,6 +69,9 @@
                             
                             @forelse ($staffMembers as $staff)
                                 <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ $staffMembers->firstItem() + $loop->index }}
+                                    </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <a href="{{ route('staff.show', $staff->id) }}" wire:navigate class="text-sm font-bold text-indigo-600 hover:text-indigo-900 hover:underline transition">
                                             {{ $staff->name }}
@@ -98,7 +102,7 @@
                             
                             @empty
                                 <tr>
-                                    <td colspan="5" class="px-6 py-8 whitespace-nowrap text-center">
+                                    <td colspan="6" class="px-6 py-8 whitespace-nowrap text-center">
                                         <div class="text-gray-500 text-sm">No staff members found in the database.</div>
                                         <div class="text-gray-400 text-xs mt-1">Click the "Add New Staff" button to hire someone!</div>
                                     </td>

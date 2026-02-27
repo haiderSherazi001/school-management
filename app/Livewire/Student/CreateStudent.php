@@ -7,8 +7,11 @@ use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\Classes;
 use App\Models\StudentProfile;
+use App\Models\Enrollment;
+use App\Models\Setting;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
 #[Layout('layouts.app')]
@@ -56,42 +59,52 @@ class CreateStudent extends Component
         ]);
 
         // 1. Auto-Generate the Roll Number (e.g., STD-2026-00001)
-        $latestProfile = StudentProfile::latest('id')->first();
-        $nextId = $latestProfile ? $latestProfile->id + 1 : 1;
+        // We find the latest user ID to ensure a unique roll number. We use User ID instead of StudentProfile ID because the Username is stored in the User table.
+        $latestUser = User::latest('id')->first();
+        $nextId = $latestUser ? $latestUser->id + 1 : 1;
         $generatedRollNumber = 'STD-' . date('Y') . '-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
 
         // 2. Auto-Generate Password based on Date of Birth (e.g., dob-20150825)
         $cleanDob = Carbon::parse($this->date_of_birth)->format('Ymd');
         $generatedPassword = 'dob-' . $cleanDob;
 
-        // 3. Create the Login Account (Username = Roll Number)
-        $user = User::create([
-            'name' => $this->name,
-            'username' => $generatedRollNumber,
-            'email' => $this->email ?: null,
-            'password' => Hash::make($generatedPassword), 
-        ]);
+        // Wrap the database inserts in a Transaction for safety
+        DB::transaction(function () use ($generatedRollNumber, $generatedPassword) {
+            
+            $user = User::create([
+                'name' => $this->name,
+                'username' => $generatedRollNumber,
+                'email' => $this->email ?: null,
+                'password' => Hash::make($generatedPassword), 
+            ]);
 
-        // 4. Assign the Spatie Role
-        $role = Role::firstOrCreate(['name' => 'Student']);
-        $user->assignRole($role);
+            $role = Role::firstOrCreate(['name' => 'Student']);
+            $user->assignRole($role);
 
-        // 5. Create the Student Profile
-        $user->studentProfile()->create([
-            'class_id' => $this->class_id,
-            'roll_number' => $generatedRollNumber, 
-            'admission_date' => $this->admission_date,
-            'cnic' => $this->cnic,
-            'date_of_birth' => $this->date_of_birth,
-            'gender' => $this->gender,
-            'blood_group' => $this->blood_group,
-            'personal_phone' => $this->personal_phone,
-            'personal_email' => $this->personal_email,
-            'guardian_name' => $this->guardian_name,
-            'guardian_phone' => $this->guardian_phone,
-            'guardian_email' => $this->guardian_email,
-            'address' => $this->address,
-        ]);
+            $user->studentProfile()->create([
+                'roll_number' => $generatedRollNumber, 
+                'admission_date' => $this->admission_date,
+                'cnic' => $this->cnic,
+                'date_of_birth' => $this->date_of_birth,
+                'gender' => $this->gender,
+                'blood_group' => $this->blood_group,
+                'personal_phone' => $this->personal_phone,
+                'personal_email' => $this->personal_email,
+                'guardian_name' => $this->guardian_name,
+                'guardian_phone' => $this->guardian_phone,
+                'guardian_email' => $this->guardian_email,
+                'address' => $this->address,
+            ]);
+
+            $currentSession = Setting::get('current_session', date('Y') . '-' . (date('Y') + 1));
+            
+            Enrollment::create([
+                'user_id' => $user->id,
+                'class_id' => $this->class_id,
+                'academic_session' => $currentSession,
+            ]);
+
+        });
 
         session()->flash('success', "Student admitted successfully! Login Username: {$generatedRollNumber} | Password: {$generatedPassword}");
 

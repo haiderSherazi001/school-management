@@ -13,7 +13,7 @@ class ShowStudent extends Component
 
     public function mount(User $student)
     {
-        $this->student = $student->load('studentProfile.class');
+        $this->student = $student->load('studentProfile', 'enrollments.academicClass');
     }
 
     public function render()

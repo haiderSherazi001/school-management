@@ -42,6 +42,7 @@
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
+                                        <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Class Name</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Group/Description</th>
                                         <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Numeric</th>
@@ -50,7 +51,8 @@
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
                                     @forelse($classes as $class)
-                                        <tr class="hover:bg-gray-50">
+                                        <tr class="transition-colors {{ $isEditing && $classId === $class->id ? 'bg-indigo-50/50 ring-1 ring-inset ring-indigo-200' : 'hover:bg-gray-50' }}">
+                                            <td class="px-4 py-3 text-sm text-gray-500">{{ $classes->firstItem() + $loop->index }}</td>
                                             <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ $class->name }}</td>
                                             <td class="px-4 py-3 text-sm text-gray-500">{{ $class->description ?? '-' }}</td>
                                             <td class="px-4 py-3 text-sm text-gray-500">{{ $class->numeric_value }}</td>
@@ -61,7 +63,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="px-4 py-8 text-center text-sm text-gray-500">No classes found matching your search.</td>
+                                            <td colspan="5" class="px-4 py-8 text-center text-sm text-gray-500">No classes found matching your search.</td>
                                         </tr>
                                     @endforelse
                                 </tbody>
@@ -71,11 +73,23 @@
                     </div>
                 </div>
 
-                <div class="w-full lg:w-1/3">
-                    <div class="bg-white shadow-sm sm:rounded-lg border border-gray-200 p-6 sticky top-6">
+                <div class="w-full lg:w-1/3" id="class-form-container"
+                     x-data="{ isEditing: @entangle('isEditing') }"
+                     x-init="$watch('isEditing', val => {
+                         if(val) {
+                             setTimeout(() => {
+                                 document.getElementById('class-form-container').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                             }, 100);
+                         }
+                     })">
+                    <div class="bg-white shadow-sm sm:rounded-lg border p-6 sticky top-6 transition-all duration-300 relative overflow-hidden {{ $isEditing ? 'border-indigo-400 ring-4 ring-indigo-50 shadow-md' : 'border-gray-200' }}">
                         
-                        <h3 class="text-lg font-medium text-gray-900 mb-4 border-b pb-2">
-                            {{ $isEditing ? 'Edit Class Details' : 'Add New Class' }}
+                        @if($isEditing)
+                            <div class="absolute top-0 left-0 w-full h-1 bg-indigo-500 animate-pulse"></div>
+                        @endif
+
+                        <h3 class="text-lg font-medium mb-4 border-b pb-2 transition-colors duration-300 {{ $isEditing ? 'text-indigo-700' : 'text-gray-900' }}">
+                            {{ $isEditing ? '✏️ Edit Class Details' : 'Add New Class' }}
                         </h3>
 
                         <form wire:submit="save">

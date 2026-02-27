@@ -1,8 +1,16 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('New Student Admission') }}
-        </h2>
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+                <a href="{{ route('students.index') }}" wire:navigate class="text-sm font-medium text-indigo-600 hover:text-indigo-900 flex items-center gap-1 mb-1 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" /></svg>
+                    Back to Directory
+                </a>
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ __('New Student Admission') }}
+                </h2>
+            </div>
+        </div>
     </x-slot>
 
     <div class="py-12">
@@ -74,7 +82,17 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Blood Group (Optional)</label>
-                            <input type="text" wire:model="blood_group" placeholder="e.g., O+" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <select wire:model="blood_group" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">-- Select Blood Group --</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
                             @error('blood_group') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
@@ -90,7 +108,7 @@
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Guardian Phone</label>
-                            <input type="text" wire:model="guardian_phone" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <input placeholder="03XXXXXXXXX" type="text" wire:model="guardian_phone" maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 11)" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             @error('guardian_phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
