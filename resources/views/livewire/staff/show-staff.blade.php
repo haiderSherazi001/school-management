@@ -21,9 +21,7 @@
             
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
                 <div class="p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                    <div class="h-24 w-24 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-3xl font-bold flex-shrink-0">
-                        {{ substr($staff->name, 0, 1) }}
-                    </div>
+                    <livewire:shared.avatar-manager :user="$staff" />
                     
                     <div class="text-center sm:text-left flex-1">
                         <h1 class="text-2xl font-bold text-gray-900">{{ $staff->name }}</h1>

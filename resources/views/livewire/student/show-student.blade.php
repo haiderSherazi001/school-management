@@ -22,9 +22,7 @@
             
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
                 <div class="p-6 sm:p-8 flex flex-col sm:flex-row items-center sm:items-start gap-6">
-                    <div class="h-24 w-24 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 text-3xl font-bold flex-shrink-0">
-                        {{ substr($student->name, 0, 1) }}
-                    </div>
+                    <livewire:shared.avatar-manager :user="$student" />
                     
                     <div class="text-center sm:text-left flex-1">
                         <h1 class="text-2xl font-bold text-gray-900">{{ $student->name }}</h1>
@@ -32,7 +30,7 @@
                         
                         <div class="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
                             <span class="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                                Class: {{ $student->studentProfile->class->name ?? 'Unassigned' }}
+                                Class: {{ $student->currentClass()?->name ?? 'Not Enrolled' }}
                             </span>
                             <span class="inline-flex items-center rounded-md bg-green-50 px-2.5 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                 Active Status
@@ -51,7 +49,7 @@
                         <dl class="space-y-3 text-sm">
                             <div class="flex justify-between">
                                 <dt class="text-gray-500">Current Class</dt>
-                                <dd class="font-medium text-gray-900">{{ $student->studentProfile->class->name ?? 'N/A' }} {{ $student->studentProfile?->class?->description ? '('.$student->studentProfile->class->description.')' : '' }}</dd>
+                                <dd class="font-medium text-gray-900">{{ $student->currentClass()?->name ?? 'N/A' }} {{ $student->currentClass()?->description ? '('.$student->currentClass()->description.')' : '' }}</dd>
                             </div>
                             <div class="flex justify-between">
                                 <dt class="text-gray-500">Admission Date</dt>

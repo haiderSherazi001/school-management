@@ -10,6 +10,8 @@ use App\Models\StudentProfile;
 use App\Models\StaffProfile;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Enrollment;
+use App\Models\Setting;
 
 class User extends Authenticatable
 {
@@ -23,7 +25,7 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name', 'username', 'email', 'password', 'email_verified_at',
+        'name', 'username', 'email', 'avatar_path', 'password', 'email_verified_at',
     ];  
 
     /**
@@ -55,5 +57,25 @@ class User extends Authenticatable
 
     public function staffProfile() {
     return $this->hasOne(StaffProfile::class);
+    }
+
+    /**
+     * Get all enrollments for this student over the years.
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class);
+    }
+
+    /**
+     * Get the student's current active class based on the Global Settings!
+     */
+    public function currentClass()
+    {
+        $currentSession = Setting::get('current_session');
+        
+        $enrollment = $this->enrollments()->where('academic_session', $currentSession)->first();
+        
+        return $enrollment ? $enrollment->academicClass : null;
     }
 }

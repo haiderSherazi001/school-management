@@ -6,15 +6,18 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\Classes;
+use App\Models\Enrollment;
+use App\Models\Setting;
+use Illuminate\Support\Facades\DB;
 
 #[Layout('layouts.app')]
 class EditStudent extends Component
 {
-    public User $student; 
+    public User $student;
 
     // Base User Details
     public $name = '';
-    public $email = ''; 
+    public $email = '';
 
     // Academic Details
     public $class_id = '';
@@ -24,7 +27,7 @@ class EditStudent extends Component
     // Personal Details
     public $cnic = '';
     public $date_of_birth = '';
-    public $gender = 'male';
+    public $gender = '';
     public $blood_group = '';
     public $personal_phone = '';
     public $personal_email = '';
@@ -39,17 +42,16 @@ class EditStudent extends Component
     {
         $this->student = $student;
 
-        // Pre-fill base User details
+        // Load Base User Info
         $this->name = $student->name;
         $this->email = $student->email;
 
-        // Pre-fill Profile details
+        // Load Profile Info
         $profile = $student->studentProfile;
         if ($profile) {
-            $this->class_id = $profile->class_id;
-            $this->roll_number = $profile->roll_number;
             $this->admission_date = $profile->admission_date;
             $this->cnic = $profile->cnic;
+            $this->roll_number = $profile->roll_number;
             $this->date_of_birth = $profile->date_of_birth;
             $this->gender = $profile->gender;
             $this->blood_group = $profile->blood_group;
@@ -60,18 +62,18 @@ class EditStudent extends Component
             $this->guardian_email = $profile->guardian_email;
             $this->address = $profile->address;
         }
+
+        $this->class_id = $student->currentClass()?->id;
     }
 
     public function update()
     {
-        $profileId = $this->student->studentProfile->id;
-
         $this->validate([
             'name' => 'required|string|max:255',
-            'email' => 'nullable|email|unique:users,email,' . $this->student->id,
+            'email' => 'nullable|email', 
             'class_id' => 'required|exists:classes,id',
-            'cnic' => 'required|string|unique:student_profiles,cnic,' . $profileId,
             'admission_date' => 'required|date',
+            'cnic' => 'required|string|unique:student_profiles,cnic,' . $this->student->studentProfile->id,
             'date_of_birth' => 'required|date',
             'gender' => 'required|in:male,female,other',
             'guardian_name' => 'required|string|max:255',
@@ -83,29 +85,45 @@ class EditStudent extends Component
             'guardian_email' => 'nullable|email',
         ]);
 
-        // Update User (Notice we do NOT update username/password here)
-        $this->student->update([
-            'name' => $this->name,
-            'email' => $this->email ?: null,
-        ]);
+        DB::transaction(function () {
+            
+            // 1. Update Base User
+            $this->student->update([
+                'name' => $this->name,
+                'email' => $this->email ?: null,
+            ]);
 
-        // Update Profile (Notice we do NOT update roll_number here)
-        $this->student->studentProfile()->update([
-            'class_id' => $this->class_id,
-            'admission_date' => $this->admission_date,
-            'cnic' => $this->cnic,
-            'date_of_birth' => $this->date_of_birth,
-            'gender' => $this->gender,
-            'blood_group' => $this->blood_group,
-            'personal_phone' => $this->personal_phone,
-            'personal_email' => $this->personal_email,
-            'guardian_name' => $this->guardian_name,
-            'guardian_phone' => $this->guardian_phone,
-            'guardian_email' => $this->guardian_email,
-            'address' => $this->address,
-        ]);
+            // 2. Update Student Profile (No class_id here!)
+            $this->student->studentProfile()->update([
+                'admission_date' => $this->admission_date,
+                'cnic' => $this->cnic,
+                'date_of_birth' => $this->date_of_birth,
+                'gender' => $this->gender,
+                'blood_group' => $this->blood_group,
+                'personal_phone' => $this->personal_phone,
+                'personal_email' => $this->personal_email,
+                'guardian_name' => $this->guardian_name,
+                'guardian_phone' => $this->guardian_phone,
+                'guardian_email' => $this->guardian_email,
+                'address' => $this->address,
+            ]);
 
-        session()->flash('success', 'Student record updated successfully!');
+            // 3. Update or Create the Enrollment
+            $currentSession = Setting::get('current_session', date('Y') . '-' . (date('Y') + 1));
+            
+            Enrollment::updateOrCreate(
+                [
+                    'user_id' => $this->student->id,
+                    'academic_session' => $currentSession,
+                ],
+                [
+                    'class_id' => $this->class_id,
+                ]
+            );
+
+        });
+
+        session()->flash('success', 'Student profile updated successfully!');
 
         return $this->redirectRoute('students.index', navigate: true);
     }

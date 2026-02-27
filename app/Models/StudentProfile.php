@@ -16,7 +16,7 @@ class StudentProfile extends Model
     use SoftDeletes;
     
     protected $fillable = [
-    'user_id', 'class_id', 'roll_number', 'admission_date', 'cnic', 
+    'user_id', 'roll_number', 'admission_date', 'cnic', 
     'date_of_birth', 'gender', 'blood_group', 'personal_phone', 
     'personal_email', 'guardian_name', 'guardian_phone', 
     'guardian_email', 'address'
@@ -24,10 +24,6 @@ class StudentProfile extends Model
 
     public function user() {    
         return $this->belongsTo(User::class);
-    }
-
-    public function class() {
-        return $this->belongsTo(Classes::class, 'class_id');
     }
 
     public function documents() {
