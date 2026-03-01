@@ -13,6 +13,10 @@ use App\Livewire\Staff\ShowStaff;
 use App\Livewire\Staff\Portal as StaffPortal;
 use App\Livewire\Student\Portal as StudentPortal;
 use App\Livewire\Administration\SchoolSettings;
+use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\BulkEnrollment;
+use App\Livewire\Admin\BulkGraduation;
+
 
 Route::view('/', 'welcome');
 
@@ -29,7 +33,9 @@ Route::middleware(['auth', 'role:Student'])->group(function () {
 });
 
 Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
-    Route::view('dashboard', 'dashboard')->name('dashboard');
+    Route::get('/dashboard', Dashboard::class)->name('dashboard');
+    Route::get('/students/bulk-enroll', BulkEnrollment::class)->name('students.bulk-enroll');
+    Route::get('/students/bulk-graduate', BulkGraduation::class)->name('students.bulk-graduate');
 
     Route::get('/classes', ManageClasses::class)->name('classes.index');
     Route::get('/settings', SchoolSettings::class)->name('settings.index'); 

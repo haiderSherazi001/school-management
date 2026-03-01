@@ -30,7 +30,7 @@
             @endif
 
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 px-4 sm:px-0 gap-4">
-                
+                            
                 <div class="w-full sm:w-1/3 relative">
                     <input 
                         type="text" 
@@ -40,9 +40,16 @@
                     >
                 </div>
                 
-                <a href="{{ route('students.create') }}" wire:navigate class="bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
-                    + Add New Student
-                </a>
+                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+                    <a href="{{ route('students.bulk-graduate') }}" wire:navigate class="w-full sm:w-auto text-center bg-white hover:bg-red-50 text-red-700 border border-gray-300 font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition whitespace-nowrap">
+                        Bulk Graduation
+                    </a>
+                    
+                    <a href="{{ route('students.create') }}" wire:navigate class="w-full sm:w-auto text-center bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                        + Add New Student
+                    </a>
+                </div>
+
             </div>
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">

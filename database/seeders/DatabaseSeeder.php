@@ -80,17 +80,5 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
-
-        // --- 5. FAKE STUDENTS ---
-        
-        // $computerClass = Classes::where('name', '10th')
-        //                 ->where('description', 'Computer Science Group')
-        //                 ->first();
-        // if ($computerClass) {
-        //     StudentProfile::factory(5)->create([
-        //         'class_id' => $computerClass->id,
-        //     ]);
-        // }
-        
     }
 }

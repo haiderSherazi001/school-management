@@ -19,7 +19,7 @@ class StudentProfile extends Model
     'user_id', 'roll_number', 'admission_date', 'cnic', 
     'date_of_birth', 'gender', 'blood_group', 'personal_phone', 
     'personal_email', 'guardian_name', 'guardian_phone', 
-    'guardian_email', 'address'
+    'guardian_email', 'address', 'status'
 ];
 
     public function user() {    

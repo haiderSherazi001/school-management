@@ -17,9 +17,15 @@
      class="py-12">
 
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Settings') }}
-        </h2>
+        <div>
+            <a href="{{ route('dashboard') }}" wire:navigate class="text-sm font-medium text-indigo-600 hover:text-indigo-900 flex items-center gap-1 mb-1 transition">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4"><path fill-rule="evenodd" d="M17 10a.75.75 0 01-.75.75H5.612l4.158 3.96a.75.75 0 11-1.04 1.08l-5.5-5.25a.75.75 0 010-1.08l5.5-5.25a.75.75 0 111.04 1.08L5.612 9.25H16.25A.75.75 0 0117 10z" clip-rule="evenodd" /></svg>
+                Back to Dashboard
+            </a>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Settings') }}
+            </h2>
+        </div>
     </x-slot>
 
     <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
