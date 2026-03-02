@@ -16,6 +16,9 @@ use App\Livewire\Administration\SchoolSettings;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\BulkEnrollment;
 use App\Livewire\Admin\BulkGraduation;
+use App\Livewire\Admin\FeeStructureManager;
+use App\Livewire\Admin\BulkFeeGenerator;
+use App\Livewire\Admin\FeeCollection;
 
 
 Route::view('/', 'welcome');
@@ -36,6 +39,10 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/students/bulk-enroll', BulkEnrollment::class)->name('students.bulk-enroll');
     Route::get('/students/bulk-graduate', BulkGraduation::class)->name('students.bulk-graduate');
+
+    Route::get('/fees/structure', FeeStructureManager::class)->name('fees.structure');
+    Route::get('/fees/generate', BulkFeeGenerator::class)->name('fees.generate');
+    Route::get('/fees/collect', FeeCollection::class)->name('fees.collect');
 
     Route::get('/classes', ManageClasses::class)->name('classes.index');
     Route::get('/settings', SchoolSettings::class)->name('settings.index'); 

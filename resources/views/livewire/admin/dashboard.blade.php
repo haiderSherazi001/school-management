@@ -94,18 +94,34 @@
                         <a href="{{ route('students.create') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             + Add Student
                         </a>
+
+                        <a href="{{ route('staff.create') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            + Add Staff
+                        </a>
                         
                         <a href="{{ route('students.bulk-enroll') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md font-semibold text-xs text-emerald-700 uppercase tracking-widest shadow-sm hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             Promote Students
                         </a>
+
+                        <a href="{{ route('fees.structure') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md font-semibold text-xs text-emerald-700 uppercase tracking-widest shadow-sm hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            Fee Management
+                        </a>
                         
-                        <a href="{{ route('students.bulk-graduate') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-rose-50 border border-rose-200 rounded-md font-semibold text-xs text-rose-700 uppercase tracking-widest shadow-sm hover:bg-rose-100 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <a href="{{ route('students.bulk-graduate') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md font-semibold text-xs text-emerald-700 uppercase tracking-widest shadow-sm hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             Bulk Graduation
                         </a>
                         
-                        <a href="{{ route('settings.index') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-slate-50 border border-slate-200 rounded-md font-semibold text-xs text-slate-700 uppercase tracking-widest shadow-sm hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-slate-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        <a href="{{ route('settings.index') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md font-semibold text-xs text-emerald-700 uppercase tracking-widest shadow-sm hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150">
                             Change Session
                         </a>
+
+                        <a href="{{ route('fees.generate') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md font-semibold text-xs text-emerald-700 uppercase tracking-widest shadow-sm hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            Generate Fees
+                        </a>
+
+                        <a href="{{ route('fees.collect') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md font-semibold text-xs text-emerald-700 uppercase tracking-widest shadow-sm hover:bg-emerald-100 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                            Collect Fees
+                        </a>    
                         
                     </div>
                 </div>
