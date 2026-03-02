@@ -23,6 +23,7 @@ class EditStudent extends Component
     public $class_id = '';
     public $roll_number = '';
     public $admission_date = '';
+    public $status = 'active';  
 
     // Personal Details
     public $cnic = '';
@@ -61,6 +62,7 @@ class EditStudent extends Component
             $this->guardian_phone = $profile->guardian_phone;
             $this->guardian_email = $profile->guardian_email;
             $this->address = $profile->address;
+            $this->status = $profile->status ?? 'active';
         }
 
         $this->class_id = $student->currentClass()?->id;
@@ -83,6 +85,7 @@ class EditStudent extends Component
             'personal_phone' => 'nullable|string',
             'personal_email' => 'nullable|email',
             'guardian_email' => 'nullable|email',
+            'status' => 'required|in:active,graduated,struck_off',
         ]);
 
         DB::transaction(function () {
@@ -106,6 +109,7 @@ class EditStudent extends Component
                 'guardian_phone' => $this->guardian_phone,
                 'guardian_email' => $this->guardian_email,
                 'address' => $this->address,
+                'status' => $this->status,  
             ]);
 
             // 3. Update or Create the Enrollment

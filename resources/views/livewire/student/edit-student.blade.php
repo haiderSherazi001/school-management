@@ -48,6 +48,16 @@
                             @error('admission_date') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Student Status</label>
+                            <select wire:model="status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <option value="active">Active (Currently Studying)</option>
+                                <option value="graduated">Graduated / Alumni</option>
+                                <option value="struck_off">Struck Off / Left School</option>
+                            </select>
+                            @error('status') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
                         <div class="col-span-2 border-b border-gray-200 pb-2 mt-4">
                             <h3 class="text-lg font-semibold text-gray-900">Personal Details</h3>
                         </div>
