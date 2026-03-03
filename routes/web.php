@@ -19,6 +19,7 @@ use App\Livewire\Admin\BulkGraduation;
 use App\Livewire\Admin\FeeStructureManager;
 use App\Livewire\Admin\BulkFeeGenerator;
 use App\Livewire\Admin\FeeCollection;
+use App\Http\Controllers\Admin\FeeVoucherPrintController;
 
 
 Route::view('/', 'welcome');
@@ -43,6 +44,7 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/fees/structure', FeeStructureManager::class)->name('fees.structure');
     Route::get('/fees/generate', BulkFeeGenerator::class)->name('fees.generate');
     Route::get('/fees/collect', FeeCollection::class)->name('fees.collect');
+    Route::get('/fees/voucher/{id}/print', [FeeVoucherPrintController::class, 'show'])->name('fees.print');
 
     Route::get('/classes', ManageClasses::class)->name('classes.index');
     Route::get('/settings', SchoolSettings::class)->name('settings.index'); 
