@@ -60,9 +60,27 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Designation</label>
-                            <input type="text" wire:model="designation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            @error('designation') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            <label class="block text-sm font-medium text-gray-700">Official Designation</label>
+                            <select wire:model.live="designation_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="">-- Select a Role --</option>
+                                @foreach($designations as $role)
+                                    <option value="{{ $role->id }}">
+                                        {{ $role->title }} {{ $role->department ? '('.$role->department.')' : '' }}
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('designation_id') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Employment Status</label>
+                            <select wire:model="employment_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                <option value="active">Active (Currently Employed)</option>
+                                <option value="on_leave">On Leave</option>
+                                <option value="resigned">Resigned</option>
+                                <option value="terminated">Terminated</option>
+                            </select>
+                            @error('employment_status') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
                         <div>

@@ -20,6 +20,7 @@ use App\Livewire\Admin\FeeStructureManager;
 use App\Livewire\Admin\BulkFeeGenerator;
 use App\Livewire\Admin\FeeCollection;
 use App\Http\Controllers\Admin\FeeVoucherPrintController;
+use App\Livewire\Admin\DesignationManager;
 
 
 Route::view('/', 'welcome');
@@ -54,6 +55,7 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/students/{student}', ShowStudent::class)->name('students.show');
     Route::get('/students', StudentDirectory::class)->name('students.index');  
 
+    Route::get('/staff/designations', DesignationManager::class)->name('staff.designations');
     Route::get('/staff/create', CreateStaff::class)->name('staff.create');
     Route::get('/staff/{staff}/edit', EditStaff::class)->name('staff.edit');
     Route::get('/staff/{staff}', ShowStaff::class)->name('staff.show');

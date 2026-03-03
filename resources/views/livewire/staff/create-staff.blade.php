@@ -62,10 +62,31 @@
                             @error('phone') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Designation (e.g., Mathematics Teacher)</label>
-                            <input type="text" wire:model="designation" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            @error('designation') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Official Designation <span class="text-red-500">*</span></label>
+                                <select wire:model.live="designation_id" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <option value="">-- Select a Role --</option>
+                                    @foreach($designations as $role)
+                                        <option value="{{ $role->id }}">
+                                            {{ $role->title }} {{ $role->department ? '('.$role->department.')' : '' }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                @error('designation_id') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                                <p class="text-xs text-gray-500 mt-1">Need a new role? Add it in the <a href="{{ route('staff.designations') }}" class="text-indigo-600 hover:underline" target="_blank">Designation Manager</a>.</p>
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Employment Status <span class="text-red-500">*</span></label>
+                                <select wire:model="employment_status" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                    <option value="active">Active (Currently Employed)</option>
+                                    <option value="on_leave">On Leave</option>
+                                    <option value="resigned">Resigned</option>
+                                    <option value="terminated">Terminated</option>
+                                </select>
+                                @error('employment_status') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                            </div>
                         </div>
 
                         <div>

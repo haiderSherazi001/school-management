@@ -14,7 +14,8 @@ class StaffProfile extends Model
     protected $fillable = [
         'user_id',
         'cnic',
-        'designation',
+        'designation_id',
+        'employment_status',
         'qualification',
         'phone',
         'personal_email',
@@ -30,5 +31,10 @@ class StaffProfile extends Model
 
     public function documents() {
         return $this->morphMany(Document::class, 'documentable');
+    }
+
+    public function designation()
+    {
+        return $this->belongsTo(Designation::class, 'designation_id');
     }
 }

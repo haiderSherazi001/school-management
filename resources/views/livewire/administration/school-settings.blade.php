@@ -41,7 +41,7 @@
             </div>
         </div>
 
-        <div class="bg-white shadow sm:rounded-lg overflow-hidden border transition-all duration-300" :class="isEditing ? 'border-indigo-300 ring-2 ring-indigo-50' : 'border-gray-200'">
+        <div class="bg-white shadow sm:rounded-lg overflow-hidden border transition-all duration-300 mb-8" :class="isEditing ? 'border-indigo-300 ring-2 ring-indigo-50' : 'border-gray-200'">
             
             <form wire:submit="save" @change="isDirty = true; isEditing = true">
                 
@@ -97,7 +97,6 @@
                 </div>
 
                 <div x-show="isEditing" x-transition style="display: none;" class="px-6 py-4 bg-gray-50 flex justify-end gap-3 border-t border-gray-200">
-                    
                     <button type="button" 
                             @click="$el.closest('form').reset(); isEditing = false; isDirty = false;" 
                             wire:click="cancel" 
@@ -110,8 +109,50 @@
                         <span wire:loading wire:target="save">Saving...</span>
                     </button>
                 </div>
-                
             </form>
         </div>
+
+        <div class="bg-white shadow sm:rounded-lg overflow-hidden border border-gray-200 p-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-1">System Modules</h3>
+            <p class="text-sm text-gray-500 mb-6">Manage rules, master data, and configurations for specific parts of the application.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                
+                <a href="{{ route('staff.designations') }}" wire:navigate class="group block p-5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white hover:border-indigo-300 hover:ring-1 hover:ring-indigo-300 transition-all duration-200 shadow-sm hover:shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 bg-blue-100 text-blue-600 rounded-md group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                    <h4 class="text-sm font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">HR Designations</h4>
+                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">Define job roles, departments, and active statuses for staff.</p>
+                </a>
+
+                <a href="{{ route('classes.index') }}" wire:navigate class="group block p-5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white hover:border-indigo-300 hover:ring-1 hover:ring-indigo-300 transition-all duration-200 shadow-sm hover:shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 bg-emerald-100 text-emerald-600 rounded-md group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                    <h4 class="text-sm font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">Academic Classes</h4>
+                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">Configure classes, sections, and classroom capacities.</p>
+                </a>
+
+                <a href="{{ route('fees.generate') }}" wire:navigate class="group block p-5 border border-gray-200 rounded-lg bg-gray-50 hover:bg-white hover:border-indigo-300 hover:ring-1 hover:ring-indigo-300 transition-all duration-200 shadow-sm hover:shadow">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="p-2 bg-amber-100 text-amber-600 rounded-md group-hover:bg-indigo-100 group-hover:text-indigo-600 transition-colors">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </div>
+                    <h4 class="text-sm font-bold text-gray-900 group-hover:text-indigo-700 transition-colors">Financial Hub</h4>
+                    <p class="text-xs text-gray-500 mt-1 line-clamp-2">Manage fee structures and bulk generate invoices.</p>
+                </a>
+
+            </div>
+        </div>
+
     </div>
 </div>

@@ -30,7 +30,7 @@
 
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
                 <div class="p-6 border-b border-gray-200 bg-gray-50">
-                    <h3 class="text-lg font-medium text-gray-900">Monthly Billing Engine</h3>
+                    <h3 class="text-lg font-medium text-gray-900">Monthly Voucher Generator</h3>
                     <p class="text-sm text-gray-500 mt-1">Generate invoices for active students based on their class fee structure.</p>
                 </div>
 
@@ -75,7 +75,7 @@
                             </div>
                             
                             <button type="submit" wire:loading.attr="disabled" class="inline-flex justify-center items-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition">
-                                <span wire:loading.remove wire:target="generateVouchers">Run Billing Engine</span>
+                                <span wire:loading.remove wire:target="generateVouchers">Generate Vouchers</span>
                                 <span wire:loading wire:target="generateVouchers">Generating Vouchers...</span>
                             </button>
                         </div>
