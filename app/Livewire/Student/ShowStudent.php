@@ -13,7 +13,15 @@ class ShowStudent extends Component
 
     public function mount(User $student)
     {
-        $this->student = $student->load('studentProfile', 'enrollments.academicClass');
+        $this->student = $student->load([
+            'studentProfile', 
+            'enrollments.academicClass',
+            'feeVouchers' => function($query) {
+                $query->latest('due_date')->limit(5);
+            }
+        ])->loadSum(['feeVouchers as pending_dues' => function($query) {
+            $query->where('status', 'unpaid');
+        }], 'amount');
     }
 
     public function render()

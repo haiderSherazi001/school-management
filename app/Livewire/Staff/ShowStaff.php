@@ -13,7 +13,6 @@ class ShowStaff extends Component
 
     public function mount(User $staff)
     {
-        // Eager load the profile to make the page load lightning fast
         $this->staff = $staff->load('staffProfile');
     }
 

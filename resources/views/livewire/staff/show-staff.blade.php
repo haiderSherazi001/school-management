@@ -29,7 +29,7 @@
                         
                         <div class="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
                             <span class="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                                {{ $staff->staffProfile->designation }}
+                                {{ $staff->staffProfile->designation->title ?? 'Role Unassigned' }}
                             </span>
                             <span class="inline-flex items-center rounded-md bg-green-50 px-2.5 py-1 text-sm font-medium text-green-700 ring-1 ring-inset ring-green-600/20">
                                 Active Employee

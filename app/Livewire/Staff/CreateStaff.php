@@ -7,6 +7,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
 use App\Models\User;
 use App\Models\StaffProfile;
+use App\Models\Designation;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -17,6 +18,7 @@ class CreateStaff extends Component
     public function mount()
     {
         $this->joining_date = now()->format('Y-m-d');
+        $this->employment_status = 'active'; 
     }
 
     #[Validate('required|string|max:255')]
@@ -28,8 +30,11 @@ class CreateStaff extends Component
     #[Validate('required|digits:13|unique:staff_profiles,cnic')]
     public $cnic = '';
 
-    #[Validate('required|string')]
-    public $designation = '';
+    #[Validate('required|exists:designations,id')]
+    public $designation_id = '';
+
+    #[Validate('required|in:active,on_leave,resigned,terminated')]
+    public $employment_status = 'active';
 
     #[Validate('required|string')]
     public $qualification = '';
@@ -70,7 +75,8 @@ class CreateStaff extends Component
 
         $user->staffProfile()->create([
             'cnic' => $this->cnic,
-            'designation' => $this->designation,
+            'designation_id' => $this->designation_id, 
+            'employment_status' => $this->employment_status, 
             'qualification' => $this->qualification,
             'phone' => $this->phone,
             'salary' => $this->salary,
@@ -84,8 +90,25 @@ class CreateStaff extends Component
         return $this->redirectRoute('staff.index', navigate: true);
     }
 
+    public function updatedDesignationId($value)
+    {
+        if ($value) {
+            $designation = Designation::find($value);
+            if ($designation) {
+                $this->salary = $designation->default_salary; 
+            }
+        } else {
+            $this->salary = ''; 
+        }
+    }
+
     public function render()
     {
-        return view('livewire.staff.create-staff');
+        return view('livewire.staff.create-staff', [
+            'designations' => Designation::where('is_active', true)
+                                         ->orderBy('department')
+                                         ->orderBy('title')
+                                         ->get()
+        ]);
     }
 }

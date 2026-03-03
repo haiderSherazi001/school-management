@@ -29,9 +29,9 @@
                 </div>
             @endif
 
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 px-4 sm:px-0 gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 px-4 sm:px-0 gap-4">
                             
-                <div class="w-full sm:w-1/3 relative">
+                <div class="w-full md:w-1/3 relative">
                     <input 
                         type="text" 
                         wire:model.live.debounce.300ms="search" 
@@ -40,37 +40,69 @@
                     >
                 </div>
                 
-                <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                    <a href="{{ route('students.bulk-graduate') }}" wire:navigate class="w-full sm:w-auto text-center bg-white hover:bg-red-50 text-red-700 border border-gray-300 font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition whitespace-nowrap">
+                <div class="flex flex-wrap sm:flex-nowrap gap-3 w-full md:w-auto justify-end">
+                    <a href="{{ route('students.bulk-graduate') }}" wire:navigate class="w-full sm:w-auto text-center bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
                         Bulk Graduation
                     </a>
                     
-                    <a href="{{ route('students.create') }}" wire:navigate class="w-full sm:w-auto text-center bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                    <a href="{{ route('students.create') }}" wire:navigate class="w-full sm:w-auto text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
                         + Add New Student
+                    </a>
+
+                    <a href="{{ route('fees.generate') }}" wire:navigate class="w-full sm:w-auto text-center bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                         Generate Fees
+                    </a>
+
+                    <a href="{{ route('fees.collect') }}" wire:navigate class="w-full sm:w-auto text-center bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                         Collect Fees
                     </a>
                 </div>
 
             </div>
 
+            <div class="mb-6 px-4 sm:px-0 border-b border-gray-200">
+                <nav class="-mb-px flex space-x-6 sm:space-x-8 overflow-x-auto" aria-label="Tabs">
+                    <button wire:click="setFilter('active')" class="{{ $statusFilter === 'active' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition">
+                        Active Students
+                    </button>
+                    
+                    <button wire:click="setFilter('graduated')" class="{{ $statusFilter === 'graduated' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition">
+                        Alumni / Graduated
+                    </button>
+                    
+                    <button wire:click="setFilter('struck_off')" class="{{ $statusFilter === 'struck_off' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition">
+                        Struck Off
+                    </button>
+                    
+                    <button wire:click="setFilter('all')" class="{{ $statusFilter === 'all' ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }} whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition">
+                        All Records
+                    </button>
+                </nav>
+            </div>
+
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto" wire:loading.class="opacity-50 pointer-events-none" wire:target="setFilter, search, delete">
                     <table class="min-w-full divide-y divide-gray-200">
                         <thead class="bg-gray-50">
                             <tr>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">#</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student Info</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Academic</th>
+                                
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Financials</th>
+                                
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Guardian</th>
                                 <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Enrolled</th>
                                 <th scope="col" class="relative px-6 py-3">
-                                    <span class="sr-only">Actions</span>
+                                    <span>Actions</span>
                                 </th>
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
                             
                             @forelse ($students as $student)
-                                <tr class="hover:bg-gray-50">
+                                <tr class="hover:bg-gray-50 transition" wire:key="student-row-{{ $student->id }}">
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                         {{ $students->firstItem() + $loop->index }}
                                     </td>
@@ -89,6 +121,34 @@
                                             @endif
                                         </div>
                                         <div class="text-sm text-gray-500">Roll: {{ $student->studentProfile->roll_number ?? 'N/A' }}</div>
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($student->studentProfile?->status === 'active')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                Active
+                                            </span>
+                                        @elseif($student->studentProfile?->status === 'graduated')
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                                                Alumni
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                                Struck Off
+                                            </span>
+                                        @endif
+                                    </td>
+
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        @if($student->pending_dues > 0)
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-50 text-red-700 border border-red-200">
+                                                Dues: Rs. {{ number_format($student->pending_dues) }}
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                                Cleared
+                                            </span>
+                                        @endif
                                     </td>
                                     
                                     <td class="px-6 py-4 whitespace-nowrap">
@@ -113,9 +173,9 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="6" class="px-6 py-8 whitespace-nowrap text-center">
-                                        <div class="text-gray-500 text-sm">No students found in the database.</div>
-                                        <div class="text-gray-400 text-xs mt-1">Click the "Add New Student" button to start enrollment!</div>
+                                    <td colspan="8" class="px-6 py-12 whitespace-nowrap text-center">
+                                        <div class="text-gray-500 text-sm">No students found matching this filter.</div>
+                                        <div class="text-gray-400 text-xs mt-1">Adjust your search or click a different tab.</div>
                                     </td>
                                 </tr>
                             @endforelse

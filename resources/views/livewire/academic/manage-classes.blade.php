@@ -1,8 +1,14 @@
 <div>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Manage Academic Classes') }}
-        </h2>
+        <div class="flex justify-between items-center">
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Manage Academic Classes') }}
+            </h2>
+            
+            <a href="{{ route('fees.structure') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-emerald-50 border border-emerald-200 rounded-md font-semibold text-xs text-emerald-700 uppercase tracking-widest shadow-sm hover:bg-emerald-100 transition">
+                Update Fee &rarr;
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-12">

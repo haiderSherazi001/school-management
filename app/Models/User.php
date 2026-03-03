@@ -78,4 +78,9 @@ class User extends Authenticatable
         
         return $enrollment ? $enrollment->academicClass : null;
     }
+
+    public function feeVouchers()
+    {
+        return $this->hasMany(FeeVoucher::class, 'user_id');
+    }
 }

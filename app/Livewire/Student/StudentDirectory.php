@@ -13,9 +13,16 @@ class StudentDirectory extends Component
     use WithPagination;
 
     public $search = '';
+    public $statusFilter = 'active';
 
     public function updatingSearch()
     {
+        $this->resetPage();
+    }
+
+    public function setFilter($status)
+    {
+        $this->statusFilter = $status;
         $this->resetPage();
     }
     
@@ -43,7 +50,16 @@ class StudentDirectory extends Component
                                    ->orWhere('guardian_name', 'like', '%' . $this->search . '%');
                       });
             })
+            ->when($this->statusFilter !== 'all', function ($query) {
+                $query->whereHas('studentProfile', function ($subQuery) {
+                    $subQuery->where('status', $this->statusFilter);
+                });
+            })
             ->with(['studentProfile', 'enrollments.academicClass']) 
+            ->withSum(['feeVouchers as pending_dues' => function($query) {
+                $query->where('status', 'unpaid');
+            }], 'amount')
+            ->latest() 
             ->paginate(10);
 
         return view('livewire.student.student-directory', [

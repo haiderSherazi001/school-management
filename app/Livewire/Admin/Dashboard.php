@@ -15,36 +15,38 @@ use App\Models\Setting;
 class Dashboard extends Component
 {
     public function render()
-        {
-            $currentSession = Setting::get('current_session', date('Y') . '-' . (date('Y') + 1));
+    {
+        $currentSession = Setting::get('current_session', date('Y') . '-' . (date('Y') + 1));
+        $schoolName = Setting::get('school_name', 'Your School');
 
-            $totalStudents = User::role('Student')->whereHas('studentProfile', function ($query) {
-                $query->where('status', 'active');
-            })->count();
-            
-            $enrolledStudents = User::role('Student')->whereHas('studentProfile', function ($query) {
-                $query->where('status', 'active');
-            })->whereHas('enrollments', function ($query) use ($currentSession) {
-                $query->where('academic_session', $currentSession);
-            })->count();
-            
-            $unassignedStudents = $totalStudents - $enrolledStudents;
+        $totalStudents = User::role('Student')->whereHas('studentProfile', function ($query) {
+            $query->where('status', 'active');
+        })->count();
+        
+        $enrolledStudents = User::role('Student')->whereHas('studentProfile', function ($query) {
+            $query->where('status', 'active');
+        })->whereHas('enrollments', function ($query) use ($currentSession) {
+            $query->where('academic_session', $currentSession);
+        })->count();
+        
+        $unassignedStudents = $totalStudents - $enrolledStudents;
 
-            $totalAlumni = StudentProfile::where('status', 'graduated')->count();
-            $totalLeft = StudentProfile::where('status', 'struck_off')->count();
+        $totalAlumni = StudentProfile::where('status', 'graduated')->count();
+        $totalLeft = StudentProfile::where('status', 'struck_off')->count();
 
-            $totalStaff = StaffProfile::count(); 
-            $totalClasses = Classes::count();
+        $activeStaff = StaffProfile::where('employment_status', 'active')->count(); 
+        $totalClasses = Classes::count();
 
-            return view('livewire.admin.dashboard', [
-                'currentSession' => $currentSession,
-                'totalStudents' => $totalStudents,
-                'enrolledStudents' => $enrolledStudents,
-                'unassignedStudents' => $unassignedStudents,
-                'totalAlumni' => $totalAlumni,
-                'totalLeft' => $totalLeft,
-                'totalStaff' => $totalStaff,
-                'totalClasses' => $totalClasses,
-            ]);
-        }
+        return view('livewire.admin.dashboard', [
+            'currentSession' => $currentSession,
+            'schoolName' => $schoolName,
+            'totalStudents' => $totalStudents,
+            'enrolledStudents' => $enrolledStudents,
+            'unassignedStudents' => $unassignedStudents,
+            'totalAlumni' => $totalAlumni,
+            'totalLeft' => $totalLeft,
+            'activeStaff' => $activeStaff,
+            'totalClasses' => $totalClasses,
+        ]);
+    }
 }

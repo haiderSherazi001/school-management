@@ -4,6 +4,7 @@ namespace App\Livewire\Staff;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use App\Models\User;
+use App\Models\Designation;
 
 #[Layout('layouts.app')]
 class EditStaff extends Component
@@ -14,7 +15,10 @@ class EditStaff extends Component
     public $username = '';
     public $email = '';
     public $cnic = '';
-    public $designation = '';
+    
+    public $designation_id = '';
+    public $employment_status = '';
+    
     public $qualification = '';
     public $phone = '';
     public $salary = '';
@@ -33,7 +37,8 @@ class EditStaff extends Component
         $profile = $staff->staffProfile;
         if ($profile) {
             $this->cnic = $profile->cnic;
-            $this->designation = $profile->designation;
+            $this->designation_id = $profile->designation_id;
+            $this->employment_status = $profile->employment_status ?? 'active';
             $this->qualification = $profile->qualification;
             $this->phone = $profile->phone;
             $this->salary = $profile->salary;
@@ -49,7 +54,10 @@ class EditStaff extends Component
             'name' => 'required|string|max:255',
             'email' => 'nullable|email|unique:users,email,' . $this->staff->id,
             'cnic' => 'required|string|max:13|unique:staff_profiles,cnic,' . $this->staff->staffProfile->id,
-            'designation' => 'required|string',
+            
+            'designation_id' => 'required|exists:designations,id',
+            'employment_status' => 'required|in:active,on_leave,resigned,terminated',
+            
             'qualification' => 'required|string',
             'phone' => 'required|string|max:11',
             'salary' => 'required|numeric|min:0',
@@ -65,7 +73,10 @@ class EditStaff extends Component
 
         $this->staff->staffProfile()->update([
             'cnic' => $this->cnic,
-            'designation' => $this->designation,
+            
+            'designation_id' => $this->designation_id,
+            'employment_status' => $this->employment_status,
+            
             'qualification' => $this->qualification,
             'phone' => $this->phone,
             'salary' => $this->salary,
@@ -79,8 +90,20 @@ class EditStaff extends Component
         return $this->redirectRoute('staff.index', navigate: true);
     }
 
+    public function updatedDesignationId($value)
+    {
+        if ($value) {
+            $designation = Designation::find($value);
+            if ($designation) {
+                $this->salary = $designation->default_salary; 
+            }
+        }
+    }
+
     public function render()
     {
-        return view('livewire.staff.edit-staff');
+        return view('livewire.staff.edit-staff', [
+            'designations' => Designation::where('is_active', true)->orderBy('department')->orderBy('title')->get()
+        ]);
     }
 }
