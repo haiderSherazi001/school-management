@@ -13,74 +13,134 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
-                <div class="p-6 sm:p-8 text-gray-900 flex flex-col sm:flex-row items-center justify-between gap-4 bg-gradient-to-r from-white to-indigo-50/30">
-                    <div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 bg-white overflow-hidden shadow-sm sm:rounded-lg border border-gray-200">
+                    <div class="h-full p-6 sm:p-8 text-gray-900 flex flex-col justify-center bg-gradient-to-r from-white to-indigo-50/30">
                         <h3 class="text-2xl font-black text-gray-900 tracking-tight">Welcome back, {{ auth()->user()->name }}! 👋</h3>
-                        <p class="text-sm font-medium text-gray-500 mt-1">Here is what is happening at <span class="text-indigo-600 font-bold">{{ $schoolName }}</span> today.</p>
+                        <p class="text-sm font-medium text-gray-500 mt-2">Here is your daily briefing for <span class="text-indigo-600 font-bold">{{ $schoolName }}</span>.</p>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-1 bg-white overflow-hidden shadow-sm sm:rounded-lg border {{ ($unassignedStudents > 0 || $overdueInvoices > 0 || $staffOnLeave > 0) ? 'border-red-300' : 'border-gray-200' }}">
+                    <div class="h-full p-6 {{ ($unassignedStudents > 0 || $overdueInvoices > 0 || $staffOnLeave > 0) ? 'bg-red-50' : 'bg-gray-50' }}">
+                        <h4 class="text-sm font-bold uppercase tracking-wider mb-3 flex items-center gap-2 {{ ($unassignedStudents > 0 || $overdueInvoices > 0 || $staffOnLeave > 0) ? 'text-red-800' : 'text-gray-500' }}">
+                            @if($unassignedStudents > 0 || $overdueInvoices > 0 || $staffOnLeave > 0) ⚠️ Action Required @else ✅ All Clear @endif
+                        </h4>
+                        
+                        @if($unassignedStudents == 0 && $overdueInvoices == 0 && $staffOnLeave == 0)
+                            <p class="text-sm text-gray-500">There are no pending alerts for today. Great job!</p>
+                        @else
+                            <ul class="text-sm text-red-700 space-y-2">
+                                @if($unassignedStudents > 0)
+                                    <li class="flex items-start gap-2"><span class="mt-0.5">&bull;</span> {{ $unassignedStudents }} student(s) have not been assigned to a class.</li>
+                                @endif
+                                @if($overdueInvoices > 0)
+                                    <li class="flex items-start gap-2"><span class="mt-0.5">&bull;</span> {{ $overdueInvoices }} fee invoice(s) are past their due date.</li>
+                                @endif
+                                @if($staffOnLeave > 0)
+                                    <li class="flex items-start gap-2"><span class="mt-0.5">&bull;</span> {{ $staffOnLeave }} staff member(s) are currently on leave.</li>
+                                @endif
+                            </ul>
+                        @endif
                     </div>
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 
-                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex items-center hover:shadow-md transition duration-200">
-                    <div class="p-3 rounded-full bg-blue-100 text-blue-600 mr-4 ring-4 ring-blue-50">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex flex-col hover:shadow-md transition duration-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-2 rounded-md bg-blue-100 text-blue-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                        </div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Total Students</p>
                     </div>
-                    <div>
-                        <p class="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">Total Students</p>
-                        <p class="text-3xl font-black text-gray-900">{{ $totalStudents }}</p>
+                    <p class="text-3xl font-black text-gray-900">{{ $totalStudents }}</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex flex-col hover:shadow-md transition duration-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-2 rounded-md bg-purple-100 text-purple-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Active Staff</p>
+                    </div>
+                    <p class="text-3xl font-black text-gray-900">{{ $activeStaff }}</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex flex-col hover:shadow-md transition duration-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-2 rounded-md bg-emerald-100 text-emerald-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Collected This Month</p>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-emerald-600">Rs. {{ number_format($collectedThisMonth) }}</p>
+                </div>
+
+                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex flex-col hover:shadow-md transition duration-200">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="p-2 rounded-md bg-orange-100 text-orange-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        </div>
+                        <p class="text-xs font-bold text-gray-500 uppercase tracking-wider">Pending Dues</p>
+                    </div>
+                    <p class="text-2xl md:text-3xl font-black text-orange-600">Rs. {{ number_format($pendingDues) }}</p>
+                </div>
+
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-800">Student Enrollments by Class</h3>
+                        <span class="text-xs font-bold text-blue-700 bg-blue-100 px-2 py-1 rounded">{{ $enrolledStudents }} Total</span>
+                    </div>
+                    <div class="p-5 max-h-72 overflow-y-auto">
+                        <div class="space-y-4">
+                            @forelse($classBreakdown as $class)
+                                @if($class->enrollments_count > 0)
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="font-semibold text-gray-700">{{ $class->name }} @if($class->description) ({{ $class->description }}) @endif</span>
+                                            <span class="text-gray-600 font-bold">{{ $class->enrollments_count }}</span>
+                                        </div>
+                                        <div class="w-full bg-gray-100 rounded-full h-2">
+                                            <div class="bg-blue-500 h-2 rounded-full" style="width: {{ ($class->enrollments_count / max($enrolledStudents, 1)) * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @empty
+                                <p class="text-sm text-gray-500 text-center py-4">No active enrollments found for this session.</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex items-center hover:shadow-md transition duration-200">
-                    <div class="p-3 rounded-full bg-green-100 text-green-600 mr-4 ring-4 ring-green-50">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="p-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-bold text-gray-800">Active Staff by Role</h3>
+                        <span class="text-xs font-bold text-purple-700 bg-purple-100 px-2 py-1 rounded">{{ $activeStaff }} Total</span>
                     </div>
-                    <div>
-                        <p class="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">Active Enrollments</p>
-                        <p class="text-3xl font-black text-gray-900">{{ $enrolledStudents }}</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-6 border {{ $unassignedStudents > 0 ? 'border-orange-300 bg-orange-50/50' : 'border-gray-200' }} flex items-center hover:shadow-md transition duration-200">
-                    <div class="p-3 rounded-full {{ $unassignedStudents > 0 ? 'bg-orange-200 text-orange-700 ring-4 ring-orange-50' : 'bg-gray-100 text-gray-600' }} mr-4">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold {{ $unassignedStudents > 0 ? 'text-orange-800' : 'text-gray-500' }} mb-1 uppercase tracking-wider">Unassigned Students</p>
-                        <p class="text-3xl font-black {{ $unassignedStudents > 0 ? 'text-orange-900' : 'text-gray-900' }}">{{ $unassignedStudents }}</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex items-center hover:shadow-md transition duration-200">
-                    <div class="p-3 rounded-full bg-purple-100 text-purple-600 mr-4 ring-4 ring-purple-50">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">Active Staff</p>
-                        <p class="text-3xl font-black text-gray-900">{{ $activeStaff }}</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex items-center hover:shadow-md transition duration-200">
-                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4 ring-4 ring-yellow-50">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 14l9-5-9-5-9 5 9 5z"></path><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5zm0 0l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14zm-4 6v-7.5l4-2.222"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">Total Alumni</p>
-                        <p class="text-3xl font-black text-gray-900">{{ $totalAlumni }}</p>
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-sm p-6 border border-gray-200 flex items-center hover:shadow-md transition duration-200">
-                    <div class="p-3 rounded-full bg-rose-100 text-rose-600 mr-4 ring-4 ring-rose-50">
-                        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7a4 4 0 11-8 0 4 4 0 018 0zM9 14a6 6 0 00-6 6v1h12v-1a6 6 0 00-6-6zM17 11h4"></path></svg>
-                    </div>
-                    <div>
-                        <p class="text-sm font-bold text-gray-500 mb-1 uppercase tracking-wider">Left School</p>
-                        <p class="text-3xl font-black text-gray-900">{{ $totalLeft }}</p>
+                    <div class="p-5 max-h-72 overflow-y-auto">
+                        <div class="space-y-4">
+                            @forelse($staffBreakdown as $role)
+                                @if($role->staff_profiles_count > 0)
+                                    <div>
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="font-semibold text-gray-700">{{ $role->title }}</span>
+                                            <span class="text-gray-600 font-bold">{{ $role->staff_profiles_count }}</span>
+                                        </div>
+                                        <div class="w-full bg-gray-100 rounded-full h-2">
+                                            <div class="bg-purple-500 h-2 rounded-full" style="width: {{ ($role->staff_profiles_count / max($activeStaff, 1)) * 100 }}%"></div>
+                                        </div>
+                                    </div>
+                                @endif
+                            @empty
+                                <p class="text-sm text-gray-500 text-center py-4">No active staff members found.</p>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
 

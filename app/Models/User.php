@@ -83,4 +83,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(FeeVoucher::class, 'user_id');
     }
+
+    /**
+     * Get the payslips for the staff member.
+     */
+    public function payslips()
+    {
+        return $this->hasMany(Payslip::class);
+    }
 }

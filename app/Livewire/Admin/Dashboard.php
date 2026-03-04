@@ -7,9 +7,11 @@ use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\StudentProfile;
 use App\Models\Classes;
-use App\Models\Enrollment;
 use App\Models\StaffProfile;
 use App\Models\Setting;
+use App\Models\FeeVoucher;
+use App\Models\Designation;
+use Illuminate\Support\Carbon;
 
 #[Layout('layouts.app')]
 class Dashboard extends Component
@@ -30,12 +32,39 @@ class Dashboard extends Component
         })->count();
         
         $unassignedStudents = $totalStudents - $enrolledStudents;
-
-        $totalAlumni = StudentProfile::where('status', 'graduated')->count();
-        $totalLeft = StudentProfile::where('status', 'struck_off')->count();
-
+        
         $activeStaff = StaffProfile::where('employment_status', 'active')->count(); 
-        $totalClasses = Classes::count();
+        $staffOnLeave = StaffProfile::where('employment_status', 'on_leave')->count();
+
+        $collectedThisMonth = FeeVoucher::where('status', 'paid')
+            ->whereMonth('updated_at', Carbon::now()->month)
+            ->whereYear('updated_at', Carbon::now()->year)
+            ->sum('amount');
+            
+        $pendingDues = FeeVoucher::where('status', 'unpaid')
+            ->whereHas('student.studentProfile', function($query) {
+                $query->where('status', 'active');
+            })
+            ->sum('amount');
+        
+        $overdueInvoices = FeeVoucher::where('status', 'unpaid')
+            ->where('due_date', '<', Carbon::today())
+            ->whereHas('student.studentProfile', function($query) {
+                $query->where('status', 'active');
+            })
+            ->count(); 
+
+        // --- 3. DATA BREAKDOWNS ---
+        $classBreakdown = Classes::withCount(['enrollments' => function ($query) use ($currentSession) {
+            $query->where('academic_session', $currentSession)
+                  ->whereHas('student.studentProfile', function($q) {
+                      $q->where('status', 'active');
+                  });
+        }])->orderBy('name')->get();
+
+        $staffBreakdown = Designation::withCount(['staffProfiles' => function ($query) {
+            $query->where('employment_status', 'active');
+        }])->orderBy('department')->orderBy('title')->get();
 
         return view('livewire.admin.dashboard', [
             'currentSession' => $currentSession,
@@ -43,10 +72,13 @@ class Dashboard extends Component
             'totalStudents' => $totalStudents,
             'enrolledStudents' => $enrolledStudents,
             'unassignedStudents' => $unassignedStudents,
-            'totalAlumni' => $totalAlumni,
-            'totalLeft' => $totalLeft,
             'activeStaff' => $activeStaff,
-            'totalClasses' => $totalClasses,
+            'staffOnLeave' => $staffOnLeave,
+            'collectedThisMonth' => $collectedThisMonth,
+            'pendingDues' => $pendingDues,
+            'overdueInvoices' => $overdueInvoices,
+            'classBreakdown' => $classBreakdown,
+            'staffBreakdown' => $staffBreakdown,
         ]);
     }
 }
