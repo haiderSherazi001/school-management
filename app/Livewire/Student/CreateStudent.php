@@ -58,17 +58,22 @@ class CreateStudent extends Component
             'guardian_email' => 'nullable|email',
         ]);
 
-        // 1. Auto-Generate the Roll Number (e.g., STD-2026-00001)
-        // We find the latest user ID to ensure a unique roll number. We use User ID instead of StudentProfile ID because the Username is stored in the User table.
-        $latestUser = User::latest('id')->first();
-        $nextId = $latestUser ? $latestUser->id + 1 : 1;
+        $lastStudent = User::where('username', 'like', 'STD-' . date('Y') . '-%')
+                           ->orderBy('username', 'desc')
+                           ->first();
+
+        if ($lastStudent) {
+            $lastNumber = (int) substr($lastStudent->username, -5);
+            $nextId = $lastNumber + 1;
+        } else {
+            $nextId = 1;
+        }
+
         $generatedRollNumber = 'STD-' . date('Y') . '-' . str_pad($nextId, 5, '0', STR_PAD_LEFT);
 
-        // 2. Auto-Generate Password based on Date of Birth (e.g., dob-20150825)
         $cleanDob = Carbon::parse($this->date_of_birth)->format('Ymd');
         $generatedPassword = 'dob-' . $cleanDob;
 
-        // Wrap the database inserts in a Transaction for safety
         DB::transaction(function () use ($generatedRollNumber, $generatedPassword) {
             
             $user = User::create([

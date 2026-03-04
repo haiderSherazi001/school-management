@@ -21,7 +21,7 @@ use App\Livewire\Admin\BulkFeeGenerator;
 use App\Livewire\Admin\FeeCollection;
 use App\Http\Controllers\Admin\FeeVoucherPrintController;
 use App\Livewire\Admin\DesignationManager;
-
+use App\Livewire\Payroll\GeneratePayroll;
 
 Route::view('/', 'welcome');
 
@@ -46,6 +46,7 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/fees/generate', BulkFeeGenerator::class)->name('fees.generate');
     Route::get('/fees/collect', FeeCollection::class)->name('fees.collect');
     Route::get('/fees/voucher/{id}/print', [FeeVoucherPrintController::class, 'show'])->name('fees.print');
+    Route::get('/payroll/generate', GeneratePayroll::class)->name('payroll.generate');
 
     Route::get('/classes', ManageClasses::class)->name('classes.index');
     Route::get('/settings', SchoolSettings::class)->name('settings.index'); 

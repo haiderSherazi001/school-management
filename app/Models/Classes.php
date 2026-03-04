@@ -14,5 +14,13 @@ class Classes extends Model
     public function students() {
         return $this->hasMany(StudentProfile::class, 'class_id');
     }
+
+    /**
+     * Get all enrollments for this class.
+     */
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'class_id');
+    }
 }
     

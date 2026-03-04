@@ -35,32 +35,43 @@
                 </div>
             @endif
             
-            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 px-4 sm:px-0 gap-4">
-                
-                <div class="w-full sm:w-1/3 relative">
-                    <input 
-                        type="text" 
-                        wire:model.live.debounce.300ms="search" 
-                        placeholder="Search by name, CNIC, or designation..." 
-                        class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pl-10"
-                    >
-                </div>
-                <div class="w:full sm:w-1/3">
-                        <select wire:model.live="designationFilter" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-700">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6 px-4 sm:px-0 gap-4">
+    
+                <div class="w-full lg:w-1/2 flex flex-col sm:flex-row gap-3">
+                    <div class="w-full sm:w-1/2 relative">
+                        <svg class="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input 
+                            type="text" 
+                            wire:model.live.debounce.300ms="search" 
+                            placeholder="Search staff..." 
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 pl-9 sm:text-sm"
+                        >
+                    </div>
+        
+                    <div class="w-full sm:w-1/2">
+                        <select wire:model.live="designationFilter" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-gray-700 sm:text-sm">
                             <option value="">All Roles</option>
                             @foreach($designations as $role)
                                 <option value="{{ $role->id }}">{{ $role->title }}</option>
                             @endforeach
                         </select>
+                    </div>
                 </div>
-                
-                <div class="flex gap-2 w-full sm:w-auto overflow-x-auto pb-2 sm:pb-0">
-                    <a href="{{ route('staff.designations') }}" wire:navigate class="bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
-                        Manage Designations
+    
+                <div class="flex flex-wrap items-center justify-start lg:justify-end gap-2 w-full lg:w-auto">
+        
+                    <a href="{{ route('payroll.generate') }}" wire:navigate class="flex-1 sm:flex-none text-center bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                        Generate Payroll
                     </a>
-                    <a href="{{ route('staff.create') }}" wire:navigate class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
-                        + Add New Staff
+        
+                    <a href="{{ route('staff.designations') }}" wire:navigate class="flex-1 sm:flex-none text-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                        Manage Roles
                     </a>
+        
+                    <a href="{{ route('staff.create') }}" wire:navigate class="flex-1 sm:flex-none text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                        + Add Staff
+                    </a>
+        
                 </div>
             </div>
 

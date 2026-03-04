@@ -13,7 +13,12 @@ class ShowStaff extends Component
 
     public function mount(User $staff)
     {
-        $this->staff = $staff->load('staffProfile');
+        $this->staff = $staff->load([
+            'staffProfile.designation',
+            'payslips' => function ($query) {
+                $query->orderBy('billing_month', 'desc');
+            }
+        ]);
     }
 
     public function render()
