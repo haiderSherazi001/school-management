@@ -109,7 +109,7 @@
                                     </td>
                                     
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-yellow-800 bg-yellow-50">
-                                        @php $lastClass = $student->enrollments->first()?->academicClass; @endphp
+                                        @php $lastClass = $student->enrollments->first()?->class; @endphp
                                         
                                         @if($lastClass)
                                             {{ $lastClass->name }} 

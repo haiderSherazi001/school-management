@@ -15,7 +15,7 @@ class ShowStudent extends Component
     {
         $this->student = $student->load([
             'studentProfile', 
-            'enrollments.academicClass',
+            'enrollments.class',
             'feeVouchers' => function($query) {
                 $query->latest('due_date')->limit(5);
             }

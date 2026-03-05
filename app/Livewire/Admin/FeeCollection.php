@@ -70,7 +70,7 @@ class FeeCollection extends Component
 
         return User::with(['studentProfile', 'feeVouchers' => function($query) {
             $query->orderByRaw("FIELD(status, 'unpaid', 'paid')")->orderBy('due_date', 'desc');
-        }, 'feeVouchers.academicClass'])
+        }, 'feeVouchers.class'])
         ->findOrFail($this->selectedStudentId);
     }
 

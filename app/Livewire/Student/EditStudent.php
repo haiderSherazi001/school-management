@@ -65,7 +65,7 @@ class EditStudent extends Component
             $this->status = $profile->status ?? 'active';
         }
 
-        $this->class_id = $student->currentClass()?->id;
+        $this->class_id = $student->class()?->id;
     }
 
     public function update()

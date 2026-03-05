@@ -6,12 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\StudentProfile;
-use App\Models\StaffProfile;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
-use App\Models\Enrollment;
-use App\Models\Setting;
 
 class User extends Authenticatable
 {
@@ -70,13 +66,13 @@ class User extends Authenticatable
     /**
      * Get the student's current active class based on the Global Settings!
      */
-    public function currentClass()
+    public function class()
     {
         $currentSession = Setting::get('current_session');
         
         $enrollment = $this->enrollments()->where('academic_session', $currentSession)->first();
         
-        return $enrollment ? $enrollment->academicClass : null;
+        return $enrollment ? $enrollment->class : null;
     }
 
     public function feeVouchers()
@@ -92,5 +88,5 @@ class User extends Authenticatable
         return $this->hasMany(Payslip::class);
     }
 
-    
+
 }

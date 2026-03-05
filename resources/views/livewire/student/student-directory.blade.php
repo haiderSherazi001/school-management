@@ -115,9 +115,9 @@
                                     
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900 font-semibold">
-                                            {{ $student->currentClass()?->name ?? 'Unassigned' }} 
-                                            @if($student->currentClass()?->description)
-                                                <span class="text-xs text-gray-500 font-normal">({{ $student->currentClass()->description }})</span>
+                                            {{ $student->class()?->name ?? 'Unassigned' }} 
+                                            @if($student->class()?->description)
+                                                <span class="text-xs text-gray-500 font-normal">({{ $student->class()->description }})</span>
                                             @endif
                                         </div>
                                         <div class="text-sm text-gray-500">Roll: {{ $student->studentProfile->roll_number ?? 'N/A' }}</div>

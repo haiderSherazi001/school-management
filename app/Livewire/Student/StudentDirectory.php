@@ -55,7 +55,7 @@ class StudentDirectory extends Component
                     $subQuery->where('status', $this->statusFilter);
                 });
             })
-            ->with(['studentProfile', 'enrollments.academicClass']) 
+            ->with(['studentProfile', 'enrollments.class']) 
             ->withSum(['feeVouchers as pending_dues' => function($query) {
                 $query->where('status', 'unpaid');
             }], 'amount')

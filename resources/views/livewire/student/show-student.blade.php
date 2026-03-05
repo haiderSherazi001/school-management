@@ -30,7 +30,7 @@
                         
                         <div class="mt-4 flex flex-wrap justify-center sm:justify-start gap-3">
                             <span class="inline-flex items-center rounded-md bg-blue-50 px-2.5 py-1 text-sm font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                                Class: {{ $student->currentClass()?->name ?? 'Not Enrolled' }}
+                                Class: {{ $student->class()?->name ?? 'Not Enrolled' }}
                             </span>
                             
                             @if($student->studentProfile?->status === 'active')
@@ -69,7 +69,7 @@
                         <dl class="space-y-3 text-sm">
                             <div class="flex justify-between">
                                 <dt class="text-gray-500">Current Class</dt>
-                                <dd class="font-medium text-gray-900">{{ $student->currentClass()?->name ?? 'N/A' }} {{ $student->currentClass()?->description ? '('.$student->currentClass()->description.')' : '' }}</dd>
+                                <dd class="font-medium text-gray-900">{{ $student->class()?->name ?? 'N/A' }} {{ $student->class()?->description ? '('.$student->class()->description.')' : '' }}</dd>
                             </div>
                             <div class="flex justify-between">
                                 <dt class="text-gray-500">Admission Date</dt>

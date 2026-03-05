@@ -8,7 +8,7 @@ class FeeStructure extends Model
 {
     protected $fillable = ['class_id', 'academic_session', 'tuition_fee'];
 
-    public function academicClass()
+    public function class()
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }

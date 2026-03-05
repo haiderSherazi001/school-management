@@ -41,7 +41,7 @@ class FeeStructureManager extends Component
     {
         $currentSession = Setting::get('current_session', date('Y') . '-' . (date('Y') + 1));
         
-        return FeeStructure::with('academicClass')
+        return FeeStructure::with('class')
             ->where('academic_session', $currentSession)
             ->get();
     }

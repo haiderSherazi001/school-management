@@ -109,9 +109,9 @@
                                     @forelse($this->feeStructures as $fee)
                                         <tr class="transition-colors hover:bg-gray-50" :class="(isEditing && class_id == {{ $fee->class_id }}) ? 'bg-indigo-50/50 ring-1 ring-inset ring-indigo-200' : ''">
                                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                                {{ $fee->academicClass->name }}
-                                                @if($fee->academicClass->description)
-                                                    <span class="text-gray-500 font-normal">({{ $fee->academicClass->description }})</span>
+                                                {{ $fee->class->name }}
+                                                @if($fee->class->description)
+                                                    <span class="text-gray-500 font-normal">({{ $fee->class->description }})</span>
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-semibold">

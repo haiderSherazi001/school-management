@@ -75,7 +75,7 @@
                                 </tr>
                                 <tr>
                                     <td class="py-1 text-gray-500">Class:</td>
-                                    <td class="py-1 font-bold text-gray-900 border-b border-gray-300">{{ $voucher->academicClass->name ?? 'N/A' }}</td>
+                                    <td class="py-1 font-bold text-gray-900 border-b border-gray-300">{{ $voucher->class->name ?? 'N/A' }}</td>
                                 </tr>
                                 <tr>
                                     <td class="py-1 text-gray-500">Issue Date:</td>
