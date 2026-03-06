@@ -15,6 +15,43 @@ class FeeStructureManager extends Component
     public $class_id = '';
     public $tuition_fee = '';
     public $isEditing = false;
+    public $cloneFromSession = '';
+    public $cloneToSession = '';
+
+    public function cloneStructure()
+    {
+        $this->validate([
+            'cloneFromSession' => 'required|string',
+            'cloneToSession' => 'required|string|different:cloneFromSession',
+        ]);
+        $oldFees = FeeStructure::where('academic_session', $this->cloneFromSession)->get();
+
+        if ($oldFees->isEmpty()) {
+            session()->flash('error', "No fee structures found in the {$this->cloneFromSession} session to copy!");
+            return;
+        }
+
+        $count = 0;
+
+        foreach ($oldFees as $oldFee) {
+            
+            FeeStructure::updateOrCreate(
+                [
+                    'class_id' => $oldFee->class_id,
+                    'academic_session' => $this->cloneToSession,
+                ],
+                [
+                    'tuition_fee' => $oldFee->tuition_fee,
+                ]
+            );
+            $count++;
+        }
+
+        $this->cloneFromSession = '';
+        $this->cloneToSession = '';
+
+        session()->flash('success', "Successfully copied {$count} class fee structures to the {$this->cloneToSession} session!");
+    }
 
     public function save()
     {

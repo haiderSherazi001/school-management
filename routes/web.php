@@ -22,6 +22,9 @@ use App\Livewire\Admin\FeeCollection;
 use App\Http\Controllers\Admin\FeeVoucherPrintController;
 use App\Livewire\Admin\DesignationManager;
 use App\Livewire\Payroll\GeneratePayroll;
+use App\Livewire\Admin\Finance\ExpenseManager;
+use App\Livewire\Admin\Finance\IncomeManager;
+use App\Livewire\Admin\Reports\FinancialLedger;
 
 Route::view('/', 'welcome');
 
@@ -41,6 +44,11 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/students/bulk-enroll', BulkEnrollment::class)->name('students.bulk-enroll');
     Route::get('/students/bulk-graduate', BulkGraduation::class)->name('students.bulk-graduate');
+
+    Route::get('/reports/financial-ledger', FinancialLedger::class)->name('reports.financial');
+
+    Route::get('/finance/expenses', ExpenseManager::class)->name('finance.expenses');
+    Route::get('/finance/income', IncomeManager::class)->name('finance.income');
 
     Route::get('/fees/structure', FeeStructureManager::class)->name('fees.structure');
     Route::get('/fees/generate', BulkFeeGenerator::class)->name('fees.generate');
