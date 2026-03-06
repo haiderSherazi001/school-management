@@ -25,4 +25,12 @@ class FeeVoucher extends Model
     {
         return $this->belongsTo(Classes::class, 'class_id');
     }
+
+    /**
+     * Get the individual line items for this voucher.
+     */
+    public function items()
+    {
+        return $this->hasMany(FeeVoucherItem::class, 'fee_voucher_id');
+    }
 }

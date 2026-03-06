@@ -49,6 +49,10 @@
                         + Add New Student
                     </a>
 
+                    <a href="{{ route('students.bulk-enroll') }}" wire:navigate class="w-full sm:w-auto text-center bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                         Promote Students
+                    </a>
+
                     <a href="{{ route('fees.generate') }}" wire:navigate class="w-full sm:w-auto text-center bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
                          Generate Fees
                     </a>

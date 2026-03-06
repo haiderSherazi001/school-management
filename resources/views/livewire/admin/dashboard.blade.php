@@ -191,6 +191,18 @@
                                     <span class="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Manage Fee Structures</span>
                                     <span class="text-gray-400 group-hover:text-emerald-500">&rarr;</span>
                                 </a>
+                                <a href="{{ route('reports.financial') }}" wire:navigate class="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 rounded-md transition duration-150 group">
+                                    <span class="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Financial Ledger (Profit & Loss)</span>
+                                    <span class="text-gray-400 group-hover:text-emerald-500">&rarr;</span>
+                                </a>
+                                <a href="{{ route('finance.income') }}" wire:navigate class="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 rounded-md transition duration-150 group">
+                                    <span class="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">General Income</span>
+                                    <span class="text-gray-400 group-hover:text-emerald-500">&rarr;</span>
+                                </a>
+                                <a href="{{ route('finance.expenses') }}" wire:navigate class="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-emerald-50 border border-gray-200 hover:border-emerald-200 rounded-md transition duration-150 group">
+                                    <span class="text-sm font-semibold text-gray-700 group-hover:text-emerald-700">General Expenses</span>
+                                    <span class="text-gray-400 group-hover:text-emerald-500">&rarr;</span>
+                                </a>
                             </div>
                         </div>
 
@@ -200,6 +212,10 @@
                                 Staff & System
                             </h4>
                             <div class="flex flex-col gap-3">
+                                <a href="{{ route('payroll.generate') }}" wire:navigate class="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-200 rounded-md transition duration-150 group">
+                                    <span class="text-sm font-bold text-gray-700 group-hover:text-purple-700">Run Monthly Payroll</span>
+                                    <span class="text-gray-400 group-hover:text-purple-500">&rarr;</span>
+                                </a>
                                 <a href="{{ route('staff.create') }}" wire:navigate class="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-200 rounded-md transition duration-150 group">
                                     <span class="text-sm font-semibold text-gray-700 group-hover:text-purple-700">Add New Staff</span>
                                     <span class="text-gray-400 group-hover:text-purple-500">&rarr;</span>
