@@ -71,6 +71,10 @@
                     <a href="{{ route('staff.create') }}" wire:navigate class="flex-1 sm:flex-none text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
                         + Add Staff
                     </a>
+
+                    <a href="{{ route('hr.attendance') }}" wire:navigate class="flex-1 sm:flex-none text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-md shadow-sm text-sm transition duration-150 ease-in-out whitespace-nowrap">
+                        Mark Attendance
+                    </a>
         
                 </div>
             </div>

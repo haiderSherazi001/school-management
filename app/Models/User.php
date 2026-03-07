@@ -88,5 +88,12 @@ class User extends Authenticatable
         return $this->hasMany(Payslip::class);
     }
 
+    /**
+     * Get the attendance records for the user.
+     */
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
 
 }
