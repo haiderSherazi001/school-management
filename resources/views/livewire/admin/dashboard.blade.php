@@ -216,6 +216,10 @@
                                     <span class="text-sm font-bold text-gray-700 group-hover:text-purple-700">Run Monthly Payroll</span>
                                     <span class="text-gray-400 group-hover:text-purple-500">&rarr;</span>
                                 </a>
+                                <a href="{{ route('hr.attendance') }}" wire:navigate class="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-200 rounded-md transition duration-150 group">
+                                    <span class="text-sm font-bold text-gray-700 group-hover:text-purple-700">Mark Attendance</span>
+                                    <span class="text-gray-400 group-hover:text-purple-500">&rarr;</span>
+                                </a> 
                                 <a href="{{ route('staff.create') }}" wire:navigate class="flex items-center justify-between px-4 py-3 bg-gray-50 hover:bg-purple-50 border border-gray-200 hover:border-purple-200 rounded-md transition duration-150 group">
                                     <span class="text-sm font-semibold text-gray-700 group-hover:text-purple-700">Add New Staff</span>
                                     <span class="text-gray-400 group-hover:text-purple-500">&rarr;</span>

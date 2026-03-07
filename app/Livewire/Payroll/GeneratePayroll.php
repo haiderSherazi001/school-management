@@ -7,6 +7,7 @@ use Livewire\Attributes\Layout;
 use App\Models\User;
 use App\Models\Payslip;
 use Carbon\Carbon;
+use App\Models\Attendance;
 
 #[Layout('layouts.app')]
 class GeneratePayroll extends Component
@@ -31,7 +32,7 @@ class GeneratePayroll extends Component
             'billing_month' => 'required|date_format:Y-m',
         ]);
 
-        $activeStaff = User::role('Staff')
+        $activeStaff = User::role('staff')
             ->whereHas('staffProfile', function ($query) {
                 $query->where('employment_status', 'active');
             })
@@ -43,32 +44,59 @@ class GeneratePayroll extends Component
             return;
         }
 
+        $startDate = Carbon::createFromFormat('Y-m', $this->billing_month)->startOfMonth()->format('Y-m-d');
+        $endDate = Carbon::createFromFormat('Y-m', $this->billing_month)->endOfMonth()->format('Y-m-d');
+
         $generatedCount = 0;
 
         foreach ($activeStaff as $staff) {
+            
+            $existingPayslip = Payslip::where('user_id', $staff->id)
+                                      ->where('billing_month', $this->billing_month)
+                                      ->first();
+
+            if ($existingPayslip) {
+                continue; 
+            }
+
             $baseSalary = $staff->staffProfile->salary ?? 0;
 
-            $payslip = Payslip::firstOrCreate(
-                [
-                    'user_id' => $staff->id,
-                    'billing_month' => $this->billing_month,
-                ],
-                [
-                    'base_salary' => $baseSalary,
-                    'bonuses' => 0,
-                    'deductions' => 0,
-                    'net_payable' => $baseSalary,
-                    'status' => 'pending',
-                ]
-            );
+            $fullAbsences = Attendance::where('user_id', $staff->id)
+                ->whereBetween('date', [$startDate, $endDate])
+                ->where('status', 'absent')
+                ->count();
 
-            if ($payslip->wasRecentlyCreated) {
-                $generatedCount++;
+            $halfDays = Attendance::where('user_id', $staff->id)
+                ->whereBetween('date', [$startDate, $endDate])
+                ->where('status', 'half_day')
+                ->count();
+
+            $totalPenaltyDays = $fullAbsences + ($halfDays * 0.5);
+
+            $perDaySalary = $baseSalary > 0 ? ($baseSalary / 30) : 0;
+            $automatedDeduction = round($totalPenaltyDays * $perDaySalary, 2);
+
+            if ($automatedDeduction > $baseSalary) {
+                $automatedDeduction = $baseSalary;
             }
+
+            $netPayable = $baseSalary - $automatedDeduction;
+
+            Payslip::create([
+                'user_id' => $staff->id,
+                'billing_month' => $this->billing_month,
+                'base_salary' => $baseSalary,
+                'bonuses' => 0,
+                'deductions' => $automatedDeduction,
+                'net_payable' => $netPayable,
+                'status' => 'pending',
+            ]);
+
+            $generatedCount++;
         }
 
         if ($generatedCount > 0) {
-            session()->flash('success', "Successfully generated {$generatedCount} new payslips!");
+            session()->flash('success', "Successfully generated {$generatedCount} new payslips with automated attendance deductions!");
         } else {
             session()->flash('info', 'All active staff members already have payslips generated for this month.');
         }

@@ -116,6 +116,10 @@
                                         @else
                                             <span class="text-gray-400 cursor-not-allowed">Locked</span>
                                         @endif
+
+                                        <a href="{{ route('payroll.print', $slip->id) }}" target="_blank" class="inline-flex items-center px-2 py-1 bg-white border border-gray-300 rounded text-xs font-bold text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 transition ml-2">
+                                            Print
+                                        </a>
                                     </td>
                                 </tr>
                             @empty

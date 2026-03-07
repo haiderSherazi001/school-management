@@ -25,6 +25,7 @@ use App\Livewire\Payroll\GeneratePayroll;
 use App\Livewire\Admin\Finance\ExpenseManager;
 use App\Livewire\Admin\Finance\IncomeManager;
 use App\Livewire\Admin\Reports\FinancialLedger;
+use App\Models\Payslip;
 
 Route::view('/', 'welcome');
 
@@ -47,6 +48,8 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
 
     Route::get('/reports/financial-ledger', FinancialLedger::class)->name('reports.financial');
 
+    Route::get('/hr/attendance', \App\Livewire\Admin\HR\StaffAttendance::class)->name('hr.attendance');
+
     Route::get('/finance/expenses', ExpenseManager::class)->name('finance.expenses');
     Route::get('/finance/income', IncomeManager::class)->name('finance.income');
 
@@ -54,7 +57,12 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/fees/generate', BulkFeeGenerator::class)->name('fees.generate');
     Route::get('/fees/collect', FeeCollection::class)->name('fees.collect');
     Route::get('/fees/voucher/{id}/print', [FeeVoucherPrintController::class, 'show'])->name('fees.print');
+
     Route::get('/payroll/generate', GeneratePayroll::class)->name('payroll.generate');
+    Route::get('/payroll/print/{id}', function ($id) {
+        $payslip = Payslip::with('staff.staffProfile.designation')->findOrFail($id);
+        return view('admin.payroll.print', compact('payslip'));
+    })->name('payroll.print');
 
     Route::get('/classes', ManageClasses::class)->name('classes.index');
     Route::get('/settings', SchoolSettings::class)->name('settings.index'); 
