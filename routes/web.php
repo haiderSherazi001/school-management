@@ -26,6 +26,14 @@ use App\Livewire\Admin\Finance\ExpenseManager;
 use App\Livewire\Admin\Finance\IncomeManager;
 use App\Livewire\Admin\Reports\FinancialLedger;
 use App\Models\Payslip;
+use App\Models\Exam;
+use App\Models\User;
+use App\Models\ExamMark;
+use App\Livewire\Admin\Academics\MarksEntry;
+use App\Livewire\Admin\Academics\ManageExams;
+use App\Livewire\Admin\Academics\ManageSubjects;
+use App\Livewire\Admin\Academics\ReportCards; 
+use App\Livewire\Admin\HR\StaffAttendance;
 
 Route::view('/', 'welcome');
 
@@ -46,9 +54,41 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/students/bulk-enroll', BulkEnrollment::class)->name('students.bulk-enroll');
     Route::get('/students/bulk-graduate', BulkGraduation::class)->name('students.bulk-graduate');
 
+    Route::get('/academics/marks', MarksEntry::class)->name('academics.marks');
+    Route::get('/academics/exams', ManageExams::class)->name('academics.exams');
+    Route::get('/academics/subjects', ManageSubjects::class)->name('academics.subjects');
+    Route::get('/academics/report-cards', ReportCards::class)->name('academics.reports');
+
+    Route::get('/academics/report/print/{exam}/{student}', function (Exam $exam, User $student) {
+        
+        $marks = ExamMark::with('subject')
+            ->where('exam_id', $exam->id)
+            ->where('student_id', $student->id)
+            ->get();
+
+        $totalMaxMarks = $marks->sum('total_marks');
+        $totalObtained = $marks->sum('obtained_marks'); 
+        
+        $percentage = $totalMaxMarks > 0 ? ($totalObtained / $totalMaxMarks) * 100 : 0;
+
+        $grade = 'F';
+        $remarks = 'Needs Hard Work';
+        
+        if ($percentage >= 90) { $grade = 'A+'; $remarks = 'Outstanding Performance!'; }
+        elseif ($percentage >= 80) { $grade = 'A'; $remarks = 'Excellent Work!'; }
+        elseif ($percentage >= 70) { $grade = 'B'; $remarks = 'Good Effort!'; }
+        elseif ($percentage >= 60) { $grade = 'C'; $remarks = 'Satisfactory.'; }
+        elseif ($percentage >= 50) { $grade = 'D'; $remarks = 'Needs Improvement.'; }
+
+        return view('admin.academics.print-report', compact
+            ('exam', 'student', 'marks', 'totalMaxMarks', 'totalObtained', 'percentage', 'grade', 'remarks')
+        );
+
+    })->name('academics.print-report');
+
     Route::get('/reports/financial-ledger', FinancialLedger::class)->name('reports.financial');
 
-    Route::get('/hr/attendance', \App\Livewire\Admin\HR\StaffAttendance::class)->name('hr.attendance');
+    Route::get('/hr/attendance', StaffAttendance::class)->name('hr.attendance');
 
     Route::get('/finance/expenses', ExpenseManager::class)->name('finance.expenses');
     Route::get('/finance/income', IncomeManager::class)->name('finance.income');
