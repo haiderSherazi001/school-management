@@ -24,77 +24,83 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-white selection:bg-indigo-100">
-    <div class="mb-10 flex flex-col items-center gap-4 animate-fade-in">
-        <a href="/" wire:navigate class="flex items-center gap-3 group">
-            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-200 group-hover:scale-105 transition-transform duration-300">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <a href="{{ url('/') }}" wire:navigate class="inline-flex items-center gap-2">
+            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
             </div>
-            <span class="text-3xl font-black tracking-tighter text-gray-900 italic">Edu<span class="text-indigo-600">Flow</span></span>
+            <span class="text-2xl font-bold text-gray-900 tracking-tight">EduFlow</span>
         </a>
+        
+        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+            Sign in to your account
+        </h2>
+        <p class="mt-2 text-sm text-gray-600">
+            Or
+            <a href="{{ route('register') }}" wire:navigate class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                create a new account
+            </a>
+        </p>
     </div>
 
-    <div class="w-full max-w-md bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl shadow-indigo-100/50 p-8 sm:p-12 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-600 to-violet-600"></div>
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div class="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-xl sm:px-10">
+            
+            <x-auth-session-status class="mb-6 text-sm font-medium text-green-700 bg-green-50 p-3 rounded-md border border-green-200" :status="session('status')" />
 
-        <div class="mb-8">
-            <h2 class="text-2xl font-black text-gray-900 tracking-tight">Welcome Back</h2>
-            <p class="text-sm font-medium text-gray-400 mt-1 uppercase tracking-widest">Access your workstation</p>
+            <form wire:submit="login" class="space-y-6">
+                
+                <div>
+                    <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                    <div class="mt-1">
+                        <input wire:model="form.username" id="username" type="text" required autofocus
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                    </div>
+                    <x-input-error :messages="$errors->get('form.username')" class="mt-2 text-xs" />
+                </div>
+
+                <div>
+                    <div class="flex items-center justify-between">
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        @if (Route::has('password.request'))
+                            <div class="text-sm">
+                                <a href="{{ route('password.request') }}" wire:navigate class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                                    Forgot your password?
+                                </a>
+                            </div>
+                        @endif
+                    </div>
+                    <div class="mt-1">
+                        <input wire:model="form.password" id="password" type="password" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                    </div>
+                    <x-input-error :messages="$errors->get('form.password')" class="mt-2 text-xs" />
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center">
+                        <input wire:model="form.remember" id="remember" type="checkbox" 
+                               class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded cursor-pointer transition-colors">
+                        <label for="remember" class="ml-2 block text-sm text-gray-900 cursor-pointer">
+                            Remember me
+                        </label>
+                    </div>
+                </div>
+
+                <div class="pt-2">
+                    <button type="submit" wire:loading.attr="disabled"
+                        class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                        <span wire:loading.remove wire:target="login">Sign in</span>
+                        <span wire:loading wire:target="login" class="flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            Authenticating...
+                        </span>
+                    </button>
+                </div>
+            </form>
         </div>
-
-        <x-auth-session-status class="mb-6 text-sm font-bold text-emerald-600 bg-emerald-50 p-3 rounded-xl border border-emerald-100" :status="session('status')" />
-
-        <form wire:submit="login" class="space-y-6">
-            <div>
-                <label for="username" class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">Credential ID</label>
-                <div class="relative group">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    </span>
-                    <input wire:model="form.username" id="username" type="text" name="username" required autofocus placeholder="Enter username" 
-                           class="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-100 text-gray-900 font-bold rounded-2xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 transition sm:text-sm shadow-sm" />
-                </div>
-                <x-input-error :messages="$errors->get('form.username')" class="mt-2 text-[10px] font-black uppercase tracking-tight" />
-            </div>
-
-            <div>
-                <div class="flex justify-between items-center mb-2 ml-1">
-                    <label for="password" class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Security Key</label>
-                    @if (Route::has('password.request'))
-                        <a class="text-[10px] font-black text-indigo-600 hover:text-indigo-800 uppercase tracking-widest transition" href="{{ route('password.request') }}" wire:navigate>
-                            Forgot?
-                        </a>
-                    @endif
-                </div>
-                <div class="relative group">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </span>
-                    <input wire:model="form.password" id="password" type="password" name="password" required placeholder="••••••••"
-                           class="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-100 text-gray-900 font-bold rounded-2xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 transition sm:text-sm shadow-sm" />
-                </div>
-                <x-input-error :messages="$errors->get('form.password')" class="mt-2 text-[10px] font-black uppercase tracking-tight" />
-            </div>
-
-            <div class="flex items-center">
-                <label for="remember" class="inline-flex items-center cursor-pointer group">
-                    <input wire:model="form.remember" id="remember" type="checkbox" class="rounded-md border-gray-200 text-indigo-600 shadow-sm focus:ring-indigo-500 transition cursor-pointer" name="remember">
-                    <span class="ms-3 text-xs font-black text-gray-400 group-hover:text-gray-600 uppercase tracking-widest transition">{{ __('Keep me synced') }}</span>
-                </label>
-            </div>
-
-            <div class="pt-2">
-                <button type="submit" class="w-full relative group inline-flex items-center justify-center bg-gray-900 hover:bg-indigo-600 text-white font-black py-4 px-8 rounded-2xl shadow-xl shadow-gray-200 hover:shadow-indigo-100 transition-all duration-300 active:scale-[0.98]">
-                    <span class="uppercase tracking-[0.2em] text-xs">Login</span>
-                    <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7-7 7"></path></svg>
-                </button>
-            </div>
-        </form>
     </div>
-
-    <p class="mt-10 text-[10px] font-black text-gray-300 uppercase tracking-[0.3em]">
-        &copy; {{ date('Y') }} EduFlow Encryption Systems
-    </p>
 </div>

@@ -8,7 +8,8 @@ use Illuminate\Support\Facades\Auth;
 new class extends Component
 {
     #[On('avatar-updated')]
-    public function refreshAvatar(){
+    #[On('profile-updated')]
+    public function refreshUser(){
         Auth::user()->refresh();
     }
     

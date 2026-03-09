@@ -6,6 +6,7 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Attributes\On;
 
 class AvatarManager extends Component
 {
@@ -13,6 +14,12 @@ class AvatarManager extends Component
 
     public User $user;
     public $photo;
+
+    #[On('profile-updated')]
+    public function refreshUser()
+    {
+        $this->user->refresh();
+    }
 
     public function save()
     {

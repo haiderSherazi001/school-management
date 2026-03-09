@@ -32,8 +32,7 @@ new #[Layout('layouts.guest')] class extends Component
 
         event(new Registered($user = User::create($validated)));
 
-        // Assign default role if you have Spatie Roles set up
-        // $user->assignRole('Admin'); 
+        $user->assignRole('Admin'); 
 
         Auth::login($user);
 
@@ -41,100 +40,91 @@ new #[Layout('layouts.guest')] class extends Component
     }
 }; ?>
 
-<div class="min-h-screen flex flex-col items-center justify-center p-4 sm:p-6 bg-white selection:bg-indigo-100">
-    <div class="mb-10 flex flex-col items-center gap-4 animate-fade-in">
-        <a href="/" wire:navigate class="flex items-center gap-3 group">
-            <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center shadow-xl shadow-indigo-200 group-hover:scale-105 transition-transform duration-300">
-                <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+<div class="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="sm:mx-auto sm:w-full sm:max-w-md text-center">
+        <a href="{{ url('/') }}" wire:navigate class="inline-flex items-center gap-2">
+            <div class="w-10 h-10 bg-indigo-600 rounded-lg flex items-center justify-center shadow-sm">
+                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                 </svg>
             </div>
-            <span class="text-3xl font-black tracking-tighter text-gray-900 italic">Edu<span class="text-indigo-600">Flow</span></span>
+            <span class="text-2xl font-bold text-gray-900 tracking-tight">EduFlow</span>
         </a>
+        
+        <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
+            Create an account
+        </h2>
+        <p class="mt-2 text-sm text-gray-600">
+            Already have an account?
+            <a href="{{ route('login') }}" wire:navigate class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                Sign in here
+            </a>
+        </p>
     </div>
 
-    <div class="w-full max-w-xl bg-white rounded-[2.5rem] border border-gray-100 shadow-2xl shadow-indigo-100/50 p-8 sm:p-12 relative overflow-hidden">
-        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-indigo-600 to-violet-600"></div>
+    <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-xl">
+        <div class="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-xl sm:px-10">
+            <form wire:submit="register" class="space-y-6">
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                        <div class="mt-1">
+                            <input wire:model="name" id="name" type="text" required autofocus
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                        </div>
+                        <x-input-error :messages="$errors->get('name')" class="mt-2 text-xs" />
+                    </div>
 
-        <div class="mb-10 text-center sm:text-left">
-            <h2 class="text-2xl font-black text-gray-900 tracking-tight">Create Institution Account</h2>
-            <p class="text-sm font-medium text-gray-400 mt-1 uppercase tracking-widest text-[10px]">Registry Onboarding Process</p>
-        </div>
-
-        <form wire:submit="register" class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            
-            <div class="md:col-span-2">
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">Administrator Name</label>
-                <div class="relative group">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                    </span>
-                    <input wire:model="name" type="text" required autofocus placeholder="e.g. Haider" 
-                           class="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-100 text-gray-900 font-bold rounded-2xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 transition sm:text-sm" />
+                    <div>
+                        <label for="username" class="block text-sm font-medium text-gray-700">Username</label>
+                        <div class="mt-1">
+                            <input wire:model="username" id="username" type="text" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                        </div>
+                        <x-input-error :messages="$errors->get('username')" class="mt-2 text-xs" />
+                    </div>
                 </div>
-                <x-input-error :messages="$errors->get('name')" class="mt-2 text-[10px] font-black uppercase" />
-            </div>
 
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">System ID</label>
-                <div class="relative group">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"></path></svg>
-                    </span>
-                    <input wire:model="username" type="text" required placeholder="username" 
-                           class="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-100 text-gray-900 font-bold rounded-2xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 transition sm:text-sm" />
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email address</label>
+                    <div class="mt-1">
+                        <input wire:model="email" id="email" type="email" required
+                            class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                    </div>
+                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-xs" />
                 </div>
-                <x-input-error :messages="$errors->get('username')" class="mt-2 text-[10px] font-black uppercase" />
-            </div>
 
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">Official Email</label>
-                <div class="relative group">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
-                    </span>
-                    <input wire:model="email" type="email" required placeholder="name@school.com" 
-                           class="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-100 text-gray-900 font-bold rounded-2xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 transition sm:text-sm" />
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
+                        <div class="mt-1">
+                            <input wire:model="password" id="password" type="password" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                        </div>
+                        <x-input-error :messages="$errors->get('password')" class="mt-2 text-xs" />
+                    </div>
+
+                    <div>
+                        <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+                        <div class="mt-1">
+                            <input wire:model="password_confirmation" id="password_confirmation" type="password" required
+                                class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-colors">
+                        </div>
+                    </div>
                 </div>
-                <x-input-error :messages="$errors->get('email')" class="mt-2 text-[10px] font-black uppercase" />
-            </div>
 
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">Security Key</label>
-                <div class="relative group">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                    </span>
-                    <input wire:model="password" type="password" required placeholder="••••••••"
-                           class="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-100 text-gray-900 font-bold rounded-2xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 transition sm:text-sm shadow-sm" />
+                <div class="pt-2">
+                    <button type="submit" wire:loading.attr="disabled"
+                        class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                        <span wire:loading.remove wire:target="register">Create Account</span>
+                        <span wire:loading wire:target="register" class="flex items-center gap-2">
+                            <svg class="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                            Processing...
+                        </span>
+                    </button>
                 </div>
-            </div>
-
-            <div>
-                <label class="block text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 ml-1">Verify Key</label>
-                <div class="relative group">
-                    <span class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                        <svg class="h-4 w-4 text-gray-400 group-focus-within:text-indigo-500 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path></svg>
-                    </span>
-                    <input wire:model="password_confirmation" type="password" required placeholder="••••••••"
-                           class="block w-full pl-11 pr-4 py-3.5 bg-gray-50 border-gray-100 text-gray-900 font-bold rounded-2xl focus:ring-4 focus:ring-indigo-50 focus:border-indigo-500 transition sm:text-sm shadow-sm" />
-                </div>
-                <x-input-error :messages="$errors->get('password')" class="mt-2 text-[10px] font-black uppercase" />
-            </div>
-
-            <div class="md:col-span-2 pt-4">
-                <button type="submit" class="w-full group inline-flex items-center justify-center bg-gray-900 hover:bg-indigo-600 text-white font-black py-4 px-8 rounded-2xl shadow-xl transition-all duration-300 active:scale-[0.98]">
-                    <span class="uppercase tracking-[0.2em] text-xs">Initialize Registry Account</span>
-                    <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7-7 7"></path></svg>
-                </button>
-            </div>
-        </form>
-
-        <div class="mt-8 text-center">
-            <p class="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                Already have an account? 
-                <a href="{{ route('login') }}" wire:navigate class="text-indigo-600 hover:text-indigo-800 transition underline underline-offset-4 ml-1">Authorize here</a>
-            </p>
+            </form>
         </div>
     </div>
 </div>
