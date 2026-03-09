@@ -226,7 +226,7 @@
                         <div>
                             <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Finance & Fees</h4>
                             <div class="flex flex-col gap-2.5">
-                                <a href="{{ route('fees.collect') }}" wire:navigate class="px-4 py-2.5 bg-emerald-50 hover:bg-emerald-100 hover:text-emerald-800 border border-emerald-100 text-sm font-bold text-emerald-700 rounded-lg transition duration-200 flex justify-between items-center group shadow-sm">
+                                <a href="{{ route('fees.collect') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
                                     Collect Payments (Desk)
                                     <svg class="w-4 h-4 text-emerald-500 group-hover:text-emerald-700 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
                                 </a>

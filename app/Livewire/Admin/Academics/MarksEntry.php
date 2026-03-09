@@ -15,18 +15,16 @@ use App\Models\Setting;
 class MarksEntry extends Component
 {
     public $currentSession;
-    
     public $exam_id = '';
     public $class_id = '';
-    public $subject_id = '';
+    public $student_id = '';
     
-    public $exam_total_marks = 100;
-
     public $exams = [];
     public $classes = [];
-    public $subjects = [];
     public $students = [];
+    public $subjects = [];
 
+    // Structure: [$subjectId] => ['obtained' => '', 'total' => '']
     public $marksData = [];
 
     public function mount()
@@ -38,95 +36,69 @@ class MarksEntry extends Component
 
     public function updatedClassId()
     {
-        $this->subject_id = '';
-        $this->students = [];
-        
+        $this->student_id = '';
+        $this->marksData = [];
         if ($this->class_id) {
-            $this->subjects = Subject::where('class_id', $this->class_id)->orderBy('name')->get();
-        } else {
-            $this->subjects = [];
+            $this->students = User::role('Student')
+                ->whereHas('enrollments', function ($q) {
+                    $q->where('class_id', $this->class_id)
+                      ->where('academic_session', $this->currentSession);
+                })->orderBy('name')->get();
         }
     }
 
-    public function loadStudents()
+    public function loadStudentRoster()
     {
         $this->validate([
             'exam_id' => 'required',
             'class_id' => 'required',
-            'subject_id' => 'required',
+            'student_id' => 'required',
         ]);
 
-        // 1. Determine the Total Marks
-        $subject = Subject::find($this->subject_id);
-        $this->exam_total_marks = $subject->total_marks ?? 100;
-
-        $this->students = User::role('Student')
-            ->whereHas('studentProfile', function ($query) {
-                $query->where('status', 'active');
-            })
-            ->whereHas('enrollments', function ($query) {
-                $query->where('class_id', $this->class_id)
-                      ->where('academic_session', $this->currentSession);
-            })
-            ->with('studentProfile')
-            ->orderBy('name')
-            ->get();
-
+        $this->subjects = Subject::where('class_id', $this->class_id)->orderBy('name')->get();
+        
         $existingMarks = ExamMark::where('exam_id', $this->exam_id)
-            ->where('subject_id', $this->subject_id)
+            ->where('student_id', $this->student_id)
             ->get()
-            ->keyBy('student_id');
-
-        if ($existingMarks->count() > 0) {
-            $this->exam_total_marks = $existingMarks->first()->total_marks;
-        }
+            ->keyBy('subject_id');
 
         $this->marksData = [];
-
-        foreach ($this->students as $student) {
-            $markRecord = $existingMarks[$student->id] ?? null;
-
-            $this->marksData[$student->id] = [
-                'obtained_marks' => $markRecord ? $markRecord->obtained_marks : '',
-                'is_absent' => $markRecord ? (bool) $markRecord->is_absent : false,
-                'remarks' => $markRecord ? $markRecord->remarks : '',
+        foreach ($this->subjects as $subject) {
+            $record = $existingMarks[$subject->id] ?? null;
+            
+            $this->marksData[$subject->id] = [
+                'obtained' => $record ? $record->obtained_marks : '',
+                'total' => $record ? $record->total_marks : $subject->total_marks,
+                'is_absent' => $record ? (bool)$record->is_absent : false,
             ];
         }
     }
 
-    public function saveMarks()
+    public function saveStudentMarks()
     {
         $this->validate([
-            'exam_id' => 'required',
-            'subject_id' => 'required',
-            'exam_total_marks' => 'required|numeric|min:1',
-            'marksData' => 'required|array',
-            'marksData.*.obtained_marks' => 'nullable|numeric|min:0|lte:exam_total_marks',
-            'marksData.*.remarks' => 'nullable|string|max:255',
-        ], [
-            'marksData.*.obtained_marks.lte' => 'Marks cannot exceed the Total Marks limit.',
+            'marksData.*.obtained' => 'nullable|numeric|min:0',
+            'marksData.*.total' => 'required|numeric|min:1',
         ]);
 
-        foreach ($this->marksData as $studentId => $data) {
-            
-            $obtained = $data['is_absent'] ? null : ($data['obtained_marks'] !== '' ? $data['obtained_marks'] : null);
-
-            ExamMark::updateOrCreate(
-                [
-                    'exam_id' => $this->exam_id,
-                    'subject_id' => $this->subject_id,
-                    'student_id' => $studentId,
-                ],
-                [
-                    'total_marks' => $this->exam_total_marks,
-                    'obtained_marks' => $obtained,
-                    'is_absent' => $data['is_absent'],
-                    'remarks' => $data['remarks'] ?? null,
-                ]
-            );
+        foreach ($this->marksData as $subjectId => $data) {
+            if ($data['obtained'] !== '' || $data['is_absent']) {
+                ExamMark::updateOrCreate(
+                    [
+                        'exam_id' => $this->exam_id,
+                        'student_id' => $this->student_id,
+                        'subject_id' => $subjectId,
+                    ],
+                    [
+                        'obtained_marks' => $data['is_absent'] ? null : $data['obtained'],
+                        'total_marks' => $data['total'],
+                        'is_absent' => $data['is_absent'],
+                    ]
+                );
+            }
         }
 
-        session()->flash('success', 'Exam marks saved successfully!');
+        session()->flash('success', 'Marks for this student have been updated.');
     }
 
     public function render()

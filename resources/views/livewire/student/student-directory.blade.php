@@ -103,7 +103,7 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="text-sm text-gray-900 font-bold">
-                                            {{ $student->class()?->name ?? 'Unassigned' }}
+                                            {{ $student->class()?->name ?? 'Unassigned' }} {{ $student->class()?->description ? '('.$student->class()?->description.')' : '' }}
                                         </div>
                                         <div class="text-[11px] font-black text-gray-400 uppercase">Roll: {{ $student->studentProfile->roll_number ?? '---' }}</div>
                                     </td>
