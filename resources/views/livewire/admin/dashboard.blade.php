@@ -174,102 +174,122 @@
                 </div>
             </div>
 
-            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-6 sm:p-8">
-                    <h3 class="text-xl font-black text-gray-900 mb-8 flex items-center gap-2">
-                        <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-                        Quick Actions
-                    </h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        
-                        <div>
-                            <h4 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Student Ops</h4>
-                            <div class="flex flex-col gap-2.5">
-                                <a href="{{ route('students.create') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-blue-50 hover:text-blue-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Add New Student
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('students.bulk-enroll') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-blue-50 hover:text-blue-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Promote / Assign Classes
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('students.bulk-graduate') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-blue-50 hover:text-blue-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Bulk Graduation
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-xs font-black text-indigo-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Academics</h4>
-                            <div class="flex flex-col gap-2.5">
-                                <a href="{{ route('academics.marks') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Marks Entry
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a> 
-                                <a href="{{ route('academics.exams') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Manage Exams
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a> 
-                                <a href="{{ route('academics.subjects') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Manage Subjects
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('academics.reports') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Report Cards
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a> 
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Finance & Fees</h4>
-                            <div class="flex flex-col gap-2.5">
-                                <a href="{{ route('fees.collect') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Collect Payments (Desk)
-                                    <svg class="w-4 h-4 text-emerald-500 group-hover:text-emerald-700 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('fees.generate') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Generate Monthly Invoices
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('fees.structure') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Manage Fee Structures
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('reports.financial') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Financial Ledger
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                            </div>
-                        </div>
-
-                        <div>
-                            <h4 class="text-xs font-black text-purple-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Staff & System</h4>
-                            <div class="flex flex-col gap-2.5">
-                                <a href="{{ route('payroll.generate') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Run Monthly Payroll
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('hr.attendance') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Mark Attendance
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a> 
-                                <a href="{{ route('staff.create') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Add New Staff
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                                <a href="{{ route('settings.index') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
-                                    Global Settings
-                                    <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
+           <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="p-6 sm:p-8">
+        <h3 class="text-xl font-black text-gray-900 mb-8 flex items-center gap-2">
+            <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            Quick Actions
+        </h3>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            
+            <div>
+                <h4 class="text-xs font-black text-blue-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Student Ops</h4>
+                <div class="flex flex-col gap-2.5">
+                    <a href="{{ route('students.index') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-blue-50 hover:text-blue-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Student Directory
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('students.create') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-blue-50 hover:text-blue-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Add New Student
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('students.bulk-enroll') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-blue-50 hover:text-blue-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Promote / Assign Classes
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('students.bulk-graduate') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-blue-50 hover:text-blue-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Bulk Graduation
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-blue-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
                 </div>
             </div>
+
+            <div>
+                <h4 class="text-xs font-black text-indigo-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Academics</h4>
+                <div class="flex flex-col gap-2.5">
+                    <a href="{{ route('academics.marks') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Marks Entry
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a> 
+                    <a href="{{ route('classes.index') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Manage Classes
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a> 
+                    <a href="{{ route('academics.exams') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Manage Exams
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a> 
+                    <a href="{{ route('academics.subjects') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Manage Subjects
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('academics.reports') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-indigo-50 hover:text-indigo-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Report Cards
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-indigo-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a> 
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Finance & Fees</h4>
+                <div class="flex flex-col gap-2.5">
+                    <a href="{{ route('fees.collect') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Collect Payments (Desk)
+                        <svg class="w-4 h-4 text-emerald-500 group-hover:text-emerald-700 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('fees.generate') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Generate Monthly Invoices
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('fees.structure') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Manage Fee Structures
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <a href="{{ route('finance.income') }}" wire:navigate class="px-3 py-2 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-xs font-bold text-gray-700 rounded-lg transition duration-200 flex justify-center items-center group">
+                            Incomes
+                        </a>
+                        <a href="{{ route('finance.expenses') }}" wire:navigate class="px-3 py-2 bg-gray-50 hover:bg-rose-50 hover:text-rose-700 text-xs font-bold text-gray-700 rounded-lg transition duration-200 flex justify-center items-center group">
+                            Expenses
+                        </a>
+                    </div>
+                    <a href="{{ route('reports.financial') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-emerald-50 hover:text-emerald-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group mt-1">
+                        Financial Ledger
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-emerald-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div>
+                <h4 class="text-xs font-black text-purple-600 uppercase tracking-widest mb-4 border-b border-gray-100 pb-2">Staff & System</h4>
+                <div class="flex flex-col gap-2.5">
+                    <a href="{{ route('staff.index') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Staff Directory
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('payroll.generate') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Run Monthly Payroll
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('hr.attendance') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Mark Attendance
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a> 
+                    <a href="{{ route('staff.designations') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Manage Designations
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                    <a href="{{ route('settings.index') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Global Settings
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 
         </div>
     </div>
