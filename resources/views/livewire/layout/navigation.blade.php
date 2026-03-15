@@ -61,6 +61,10 @@ new class extends Component
                             <x-nav-link :href="route('settings.index')" :active="request()->routeIs('settings.*')" wire:navigate>
                                 {{ __('Settings') }}
                             </x-nav-link>
+
+                            <x-nav-link :href="route('help')" :active="request()->routeIs('help')" wire:navigate>
+                                {{ __('Help') }}
+                            </x-nav-link>
                         @endrole
 
                         @role('Staff')
@@ -106,6 +110,10 @@ new class extends Component
                             </div>
                             <x-dropdown-link :href="route('profile')" wire:navigate class="font-bold">
                                 {{ __('My Profile') }}
+                            </x-dropdown-link>
+
+                            <x-dropdown-link :href="route('help')" wire:navigate class="font-bold text-indigo-600">
+                                {{ __('Help & Docs') }}
                             </x-dropdown-link>
 
                             <button wire:click="logout" class="w-full text-start border-t border-gray-50">
@@ -181,7 +189,11 @@ new class extends Component
                         {{ __('Profile Settings') }}
                     </x-responsive-nav-link>
 
-                    <button wire:click="logout" class="w-full text-start">
+                    <x-responsive-nav-link :href="route('help')" wire:navigate class="font-bold text-indigo-600">
+                        {{ __('Help & Docs') }}
+                    </x-responsive-nav-link>
+
+                    <button wire:click="logout" class="w-full text-start border-t border-gray-50">
                         <x-responsive-nav-link class="text-red-600 font-bold">
                             {{ __('Sign Out') }}
                         </x-responsive-nav-link>

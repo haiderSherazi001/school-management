@@ -11,7 +11,6 @@ use App\Models\FeeVoucherItem;
 use App\Models\Setting;
 use App\Models\Enrollment;
 
-
 #[Layout('layouts.app')]
 class FeeCollection extends Component
 {
@@ -25,6 +24,30 @@ class FeeCollection extends Component
     public $showInstantBillForm = false;
     public $instantBillTitle = '';
     public $instantBillAmount = '';
+
+    public $bulkClassId = '';
+    public $bulkBillingMonth = '';
+    public $showBulkCollectionModal = false;
+
+    public function mount()
+    {
+        $this->bulkBillingMonth = date('F Y');
+    }
+
+    public function openBulkModal()
+    {
+        $this->showBulkCollectionModal = true;
+        $this->bulkClassId = '';
+        $this->bulkBillingMonth = date('F Y');
+        $this->resetValidation();
+        $this->dispatch('scroll-to-bulk-modal');
+    }
+
+    public function closeBulkModal()
+    {
+        $this->showBulkCollectionModal = false;
+        $this->resetValidation();
+    }
 
     public function selectStudent($id)
     {
@@ -55,6 +78,42 @@ class FeeCollection extends Component
         ]);
 
         session()->flash('success', "Payment reverted to unpaid.");
+    }
+
+    public function markBulkPaid()
+    {
+        $this->validate([
+            'bulkClassId' => 'required',
+            'bulkBillingMonth' => 'required|string',
+        ]);
+
+        // Trim to prevent invisible space issues
+        $cleanMonth = trim($this->bulkBillingMonth);
+
+        $vouchers = FeeVoucher::where('class_id', $this->bulkClassId)
+            ->where('billing_month', $cleanMonth)
+            ->where('status', 'unpaid')
+            ->get();
+
+        if ($vouchers->isEmpty()) {
+            session()->flash('error', "No unpaid vouchers found for the selected class in {$cleanMonth}.");
+            return;
+        }
+
+        $count = $vouchers->count();
+        $totalAmount = 0;
+
+        foreach ($vouchers as $voucher) {
+            $totalAmount += $voucher->amount;
+            $voucher->update([
+                'status' => 'paid',
+                'paid_at' => now(),
+            ]);
+        }
+
+        session()->flash('success', "Successfully collected payments for {$count} vouchers totaling Rs. " . number_format($totalAmount) . "!");
+        
+        $this->closeBulkModal();
     }
 
     public function openAddItemForm($voucherId)
@@ -164,6 +223,28 @@ class FeeCollection extends Component
     }
 
     #[Computed]
+    public function pendingVoucherDetails()
+    {
+        if (empty($this->bulkClassId) || empty($this->bulkBillingMonth)) {
+            return collect();
+        }
+
+        $cleanMonth = trim($this->bulkBillingMonth);
+
+        $vouchers = FeeVoucher::where('class_id', $this->bulkClassId)
+            ->where('billing_month', $cleanMonth)
+            ->where('status', 'unpaid')
+            ->get();
+
+        $users = User::whereIn('id', $vouchers->pluck('user_id'))->pluck('name', 'id');
+
+        return $vouchers->map(function($voucher) use ($users) {
+            $voucher->student_name = $users[$voucher->user_id] ?? 'Unknown Student';
+            return $voucher;
+        });
+    }
+
+    #[Computed]
     public function searchResults()
     {
         if (strlen($this->search) < 2) {
@@ -209,6 +290,12 @@ class FeeCollection extends Component
             $query->orderByRaw("FIELD(status, 'unpaid', 'paid')")->orderBy('due_date', 'desc');
         }, 'feeVouchers.class', 'feeVouchers.items'])
         ->findOrFail($this->selectedStudentId);
+    }
+
+    #[Computed]
+    public function classes()
+    {
+        return \App\Models\Classes::orderBy('numeric_value')->get();
     }
 
     public function render()
