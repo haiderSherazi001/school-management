@@ -374,7 +374,7 @@
 
             <div class="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
                 <p class="text-sm text-gray-400">
-                    &copy; {{ date('Y') }} EduFlow Systems, Inc. All rights reserved.
+                    &copy; {{ date('Y') }} EduFlow. All rights reserved.
                 </p>
             </div>
         </div>
