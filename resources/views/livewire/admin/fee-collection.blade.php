@@ -4,14 +4,22 @@
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Fee Collection Desk') }}
             </h2>
-            <a href="{{ route('fees.generate') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
-                {{ __('Generate Fees') }}
-            </a>
+            <div class="flex gap-3">
+                <a href="{{ route('fees.generate') }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+                    {{ __('Generate Fees') }}
+                </a>
+            </div>
         </div>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="mb-6 flex justify-end">
+                <button wire:click="openBulkModal" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-emerald-500 active:bg-emerald-700 focus:outline-none focus:border-emerald-700 focus:ring focus:ring-emerald-300 disabled:opacity-25 transition shadow-sm">
+                    <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    Bulk Collect
+                </button>
+            </div>
             
             @if (session()->has('success'))
                 <div class="mb-6 rounded-md bg-green-50 p-4 border border-green-200">
@@ -22,6 +30,94 @@
             @if (session()->has('error'))
                 <div class="mb-6 rounded-md bg-red-50 p-4 border border-red-200">
                     <p class="text-sm font-medium text-red-800">{{ session('error') }}</p>
+                </div>
+            @endif
+
+            @if($showBulkCollectionModal)
+                <div id="bulk-collection-panel" class="mb-8 bg-gradient-to-br from-emerald-50 to-white rounded-2xl shadow-sm border border-emerald-200 overflow-hidden relative animate-fade-in-down">
+                    <div class="p-6 sm:p-8 flex flex-col md:flex-row gap-8 items-start">
+                        
+                        <div class="w-full md:w-1/3">
+                            <div class="inline-flex items-center justify-center p-3 bg-emerald-100 rounded-xl text-emerald-600 mb-4">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                            </div>
+                            <h3 class="text-2xl font-black text-emerald-900 tracking-tight">Bulk Collect Fees</h3>
+                            <p class="text-sm text-emerald-700 font-medium mt-2 leading-relaxed">Select a class and billing month to locate all unpaid vouchers. Mark them all as paid with a single click to instantly balance your Ledger.</p>
+                            <button wire:click="closeBulkModal" class="mt-6 text-sm font-bold text-gray-500 hover:text-gray-800 transition py-2 px-4 bg-white hover:bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
+                                Cancel & Close
+                            </button>
+                        </div>
+
+                        <div class="w-full md:w-2/3 bg-white p-6 rounded-xl border border-emerald-100 shadow-sm">
+                            <form wire:submit="markBulkPaid" class="flex flex-col sm:flex-row gap-4 items-end justify-between">
+                                <div class="w-full sm:w-1/2">
+                                    <label class="block text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">Target Class</label>
+                                    <select id="bulk-class-select" wire:model.live="bulkClassId" class="w-full rounded-lg border-emerald-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 font-medium">
+                                        <option value="">-- Choose a Class --</option>
+                                        @foreach($this->classes as $class)
+                                            <option value="{{ $class->id }}">{{ $class->name }} {{ $class->description ? '('.$class->description.')' : '' }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('bulkClassId') <span class="text-red-500 text-xs font-bold block mt-2">{{ $message }}</span> @enderror
+                                </div>
+                                
+                                <div class="w-full sm:w-1/3">
+                                    <label class="block text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">Billing Month</label>
+                                    <input type="text" wire:model.live.debounce.300ms="bulkBillingMonth" placeholder="e.g. March 2026" class="w-full rounded-lg border-emerald-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 font-medium">
+                                    @error('bulkBillingMonth') <span class="text-red-500 text-xs font-bold block mt-2">{{ $message }}</span> @enderror
+                                </div>
+
+                                <div class="w-full sm:w-auto">
+                                    <button type="button" wire:click="markBulkPaid" wire:loading.attr="disabled" wire:target="markBulkPaid" class="w-full whitespace-nowrap flex justify-center items-center py-2.5 px-6 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition">
+                                        <span wire:loading.remove wire:target="markBulkPaid">Collect All</span>
+                                        <span wire:loading wire:target="markBulkPaid">Processing...</span>
+                                    </button>
+                                </div>
+                            </form>
+
+                            @if($bulkClassId && $bulkBillingMonth)
+                                <div class="mt-8 border-t border-emerald-100 pt-6">
+                                    @if($this->pendingVoucherDetails->count() > 0)
+                                        <div class="mb-6 flex justify-between items-center bg-emerald-50 px-5 py-4 rounded-xl border border-emerald-200 shadow-sm">
+                                            <span class="text-sm font-bold text-emerald-800 flex items-center gap-2">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                Ready to collect: <strong>{{ $this->pendingVoucherDetails->count() }} Students</strong>
+                                            </span>
+                                            <span class="text-base font-black text-emerald-900 bg-emerald-200 px-3 py-1 rounded-md">Total: Rs. {{ number_format($this->pendingVoucherDetails->sum('amount')) }}</span>
+                                        </div>
+                                        <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-xl shadow-inner scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
+                                            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                                                <thead class="bg-gray-50/90 sticky top-0 backdrop-blur-sm">
+                                                    <tr>
+                                                        <th class="px-5 py-3 text-left font-bold text-gray-700 tracking-wider">Student Name</th>
+                                                        <th class="px-5 py-3 text-center font-bold text-gray-700 tracking-wider">Voucher No.</th>
+                                                        <th class="px-5 py-3 text-right font-bold text-gray-700 tracking-wider">Pending Due</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody class="divide-y divide-gray-100 bg-white">
+                                                    @foreach($this->pendingVoucherDetails as $voucher)
+                                                    <tr class="hover:bg-emerald-50/50 transition duration-150">
+                                                        <td class="px-5 py-3 text-gray-900 font-bold">{{ $voucher->student_name }}</td>
+                                                        <td class="px-5 py-3 text-center text-gray-500 text-xs font-mono">{{ $voucher->voucher_number }}</td>
+                                                        <td class="px-5 py-3 text-right font-black text-emerald-700 text-base">Rs. {{ number_format($voucher->amount) }}</td>
+                                                    </tr>
+                                                    @endforeach
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    @else
+                                        <div class="py-10 text-center bg-gray-50 rounded-xl border border-gray-200 border-dashed">
+                                            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-gray-100 mb-3 text-gray-400">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                            </div>
+                                            <h4 class="text-sm font-bold text-gray-900">All Clear!</h4>
+                                            <p class="text-xs font-medium text-gray-500 mt-1 max-w-sm mx-auto">No unpaid vouchers found for this class in {{ $bulkBillingMonth }}.</p>
+                                        </div>
+                                    @endif
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             @endif
 
@@ -59,7 +155,7 @@
                                 <svg class="w-5 h-5 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 Pending Payments
                             </h3>
-                            <span class="text-xs font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full">{{ $this->defaulters->count() }}</span>
+                            <span class="text-xs font-bold bg-orange-200 text-orange-800 px-2 py-0.5 rounded-full" title="Total Defaulters">{{ $this->defaulters->count() }}</span>
                         </div>
                         
                         <div class="max-h-[400px] overflow-y-auto p-2">
@@ -261,4 +357,19 @@
             </div>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('scroll-to-bulk-modal', () => {
+                setTimeout(() => {
+                    const panel = document.getElementById('bulk-collection-panel');
+                    const input = document.getElementById('bulk-class-select');
+                    if (panel && input) {
+                        panel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        input.focus();
+                    }
+                }, 100);
+            });
+        });
+    </script>
 </div>

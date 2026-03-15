@@ -39,6 +39,7 @@ Route::view('/', 'welcome');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('profile', 'profile')->name('profile');
+    Route::get('/help', \App\Livewire\HelpCenter::class)->name('help');
 });
 
 Route::middleware(['auth', 'role:Staff'])->group(function () {

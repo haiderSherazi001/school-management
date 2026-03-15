@@ -1,9 +1,15 @@
 <div>
     <x-slot name="header">
         <div class="flex justify-between items-center">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Manage Fee Structures') }}
-            </h2>
+            <div class="flex items-center gap-4">
+                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    {{ __('Manage Fee Structures') }}
+                </h2>
+                <span class="bg-indigo-100 text-indigo-800 text-xs font-bold px-3 py-1 rounded-full border border-indigo-200 shadow-sm flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    Active Session: {{ $currentSession }}
+                </span>
+            </div>
             <a href="{{ route('classes.index') ?? '#' }}" wire:navigate class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 transition">
                 &larr; Back to Classes
             </a>

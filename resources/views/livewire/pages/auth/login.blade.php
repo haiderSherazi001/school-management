@@ -49,6 +49,21 @@ new #[Layout('layouts.guest')] class extends Component
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div class="bg-white py-8 px-4 shadow-sm border border-gray-200 sm:rounded-xl sm:px-10">
             
+            <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 mb-6 rounded-r-md">
+                <div class="flex">
+                    <div class="flex-shrink-0">
+                        <svg class="h-5 w-5 text-indigo-400" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                        </svg>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm text-indigo-700 font-medium">
+                            <strong>Public Demo:</strong> Just click 'Sign In' to explore the Admin panel. Data is safely reset every 24 hours.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
             <x-auth-session-status class="mb-6 text-sm font-medium text-green-700 bg-green-50 p-3 rounded-md border border-green-200" :status="session('status')" />
 
             <form wire:submit="login" class="space-y-6">

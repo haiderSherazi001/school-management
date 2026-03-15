@@ -87,6 +87,7 @@ class FeeStructureManager extends Component
     {
         return view('livewire.admin.fee-structure-manager', [
             'classes' => Classes::orderBy('numeric_value')->get(),
+            'currentSession' => Setting::get('current_session', date('Y') . '-' . (date('Y') + 1)),
         ]);
     }
 }

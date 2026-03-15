@@ -319,32 +319,7 @@
 
                 <div class="bg-white rounded-2xl p-8 shadow-2xl">
                     <h3 class="text-xl font-bold text-gray-900 mb-6">Request a Demo</h3>
-                    <form action="#" method="POST" class="space-y-5">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                            <div>
-                                <label for="first-name" class="block text-sm font-medium text-gray-700">Name</label>
-                                <input type="text" name="first-name" id="first-name" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            </div>
-                            <div>
-                                <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                                <input type="email" name="email" id="email" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                            </div>
-                        </div>
-                        
-                        <div>
-                            <label for="school" class="block text-sm font-medium text-gray-700">Institution Name</label>
-                            <input type="text" name="school" id="school" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                        </div>
-
-                        <div>
-                            <label for="message" class="block text-sm font-medium text-gray-700">How can we help?</label>
-                            <textarea id="message" name="message" rows="3" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"></textarea>
-                        </div>
-
-                        <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                            Send Request
-                        </button>
-                    </form>
+                    <livewire:frontend.contact-form />
                 </div>
             </div>
         </div>
