@@ -52,6 +52,14 @@
         </div>
     </header>
 
+    @guest
+        <div class="bg-indigo-50/90 backdrop-blur-sm border-b border-indigo-100 py-3 px-4 text-center z-40 relative">
+            <p class="text-sm text-indigo-800 font-medium">
+                You have already been provided with login credentials. There is no need to register—just <a href="{{ route('login') }}" class="font-bold hover:text-indigo-900 hover:underline transition-colors">Sign In</a> to access your portal.
+            </p>
+        </div>
+    @endguest
+
     <section class="bg-gray-50 py-20 lg:py-32 border-b border-gray-200 overflow-hidden relative">
         <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 rounded-full bg-indigo-50 blur-3xl opacity-50 pointer-events-none"></div>
         <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 rounded-full bg-blue-50 blur-3xl opacity-50 pointer-events-none"></div>
