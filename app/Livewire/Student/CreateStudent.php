@@ -13,6 +13,7 @@ use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use App\Events\StudentRegistered;
 
 #[Layout('layouts.app')]
 class CreateStudent extends Component
@@ -74,9 +75,11 @@ class CreateStudent extends Component
         $cleanDob = Carbon::parse($this->date_of_birth)->format('Ymd');
         $generatedPassword = 'dob-' . $cleanDob;
 
-        DB::transaction(function () use ($generatedRollNumber, $generatedPassword) {
+        $createdUser = null;
+
+        DB::transaction(function () use ($generatedRollNumber, $generatedPassword, &$createdUser) {
             
-            $user = User::create([
+            $createdUser = User::create([
                 'name' => $this->name,
                 'username' => $generatedRollNumber,
                 'email' => $this->email ?: null,
@@ -84,9 +87,9 @@ class CreateStudent extends Component
             ]);
 
             $role = Role::firstOrCreate(['name' => 'Student']);
-            $user->assignRole($role);
+            $createdUser->assignRole($role);
 
-            $user->studentProfile()->create([
+            $createdUser->studentProfile()->create([
                 'roll_number' => $generatedRollNumber, 
                 'admission_date' => $this->admission_date,
                 'cnic' => $this->cnic,
@@ -104,12 +107,16 @@ class CreateStudent extends Component
             $currentSession = Setting::get('current_session', date('Y') . '-' . (date('Y') + 1));
             
             Enrollment::create([
-                'user_id' => $user->id,
+                'user_id' => $createdUser->id,
                 'class_id' => $this->class_id,
                 'academic_session' => $currentSession,
             ]);
 
         });
+
+        if ($createdUser) {
+            StudentRegistered::dispatch($createdUser, $generatedPassword);
+        }
 
         session()->flash('success', "Student admitted successfully! Login Username: {$generatedRollNumber} | Password: {$generatedPassword}");
 
