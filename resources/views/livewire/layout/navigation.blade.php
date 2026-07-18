@@ -128,9 +128,6 @@ new class extends Component
                         <a href="{{ route('login') }}" wire:navigate class="text-sm font-bold text-gray-500 hover:text-indigo-600 transition">
                             Login
                         </a>
-                        <a href="{{ route('register') }}" wire:navigate class="bg-gray-900 text-white px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest hover:bg-indigo-600 transition shadow-lg shadow-gray-200">
-                            Register
-                        </a>
                     </div>
                 @endauth
             </div>
@@ -160,9 +157,6 @@ new class extends Component
             @else
                 <x-responsive-nav-link :href="route('login')" wire:navigate>
                     {{ __('Login') }}
-                </x-responsive-nav-link>
-                <x-responsive-nav-link :href="route('register')" wire:navigate class="text-indigo-600 font-bold">
-                    {{ __('Register Account') }}
                 </x-responsive-nav-link>
             @endauth
         </div>

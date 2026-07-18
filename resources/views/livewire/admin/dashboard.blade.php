@@ -275,7 +275,11 @@
                     <a href="{{ route('hr.attendance') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
                         Mark Attendance
                         <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                    </a> 
+                    </a>
+                    <a href="{{ route('hr.attendance.history') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
+                        Attendance History
+                        <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                    </a>
                     <a href="{{ route('staff.designations') }}" wire:navigate class="px-4 py-2.5 bg-gray-50 hover:bg-purple-50 hover:text-purple-700 text-sm font-bold text-gray-700 rounded-lg transition duration-200 flex justify-between items-center group">
                         Manage Designations
                         <svg class="w-4 h-4 text-gray-400 group-hover:text-purple-500 transform group-hover:translate-x-1 transition" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>

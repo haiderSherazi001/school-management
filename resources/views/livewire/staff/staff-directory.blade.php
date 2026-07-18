@@ -59,6 +59,10 @@
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                                 Mark Attendance
                             </a>
+                            <a href="{{ route('hr.attendance.history') }}" wire:navigate class="flex items-center gap-2 px-4 py-2.5 text-sm font-bold text-indigo-700 hover:bg-indigo-50 transition">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6h2v6H9zm4 0V7h2v10h-2zm-8 0v-3h2v3H5zM3 21h18v-2H3v2z"></path></svg>
+                                Attendance History
+                            </a>
                         </div>
                         <div class="py-1">
                             <a href="{{ route('staff.designations') }}" wire:navigate class="block px-4 py-2.5 text-sm font-bold text-gray-600 hover:bg-gray-50 transition">Manage Roles</a>

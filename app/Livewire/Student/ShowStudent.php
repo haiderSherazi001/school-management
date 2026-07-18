@@ -14,14 +14,14 @@ class ShowStudent extends Component
     public function mount(User $student)
     {
         $this->student = $student->load([
-            'studentProfile', 
+            'studentProfile',
             'enrollments.class',
             'feeVouchers' => function($query) {
-                $query->latest('due_date')->limit(5);
+                $query->latest('due_date')->limit(5)->with('payments');
             }
-        ])->loadSum(['feeVouchers as pending_dues' => function($query) {
-            $query->where('status', 'unpaid');
-        }], 'amount');
+        ]);
+
+        $this->student->pending_dues = \App\Models\FeeVoucher::outstandingBalanceForUser($student->id);
     }
 
     public function render()

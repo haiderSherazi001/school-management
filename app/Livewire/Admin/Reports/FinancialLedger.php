@@ -4,7 +4,7 @@ namespace App\Livewire\Admin\Reports;
 
 use Livewire\Component;
 use Livewire\Attributes\Layout;
-use App\Models\FeeVoucher;
+use App\Models\Payment;
 use App\Models\Payslip;
 use App\Models\Expense;
 use App\Models\Income;
@@ -31,11 +31,10 @@ class FinancialLedger extends Component
         for ($i = 1; $i <= 12; $i++) {
             
             $dbMonthString = $this->selectedYear . '-' . str_pad($i, 2, '0', STR_PAD_LEFT);
-            
-            $feeVoucherMonthString = Carbon::create($this->selectedYear, $i, 1)->format('F Y');
 
-            $feeRevenue = FeeVoucher::where('billing_month', $feeVoucherMonthString)
-                                 ->where('status', 'paid')
+            $feeRevenue = Payment::whereNull('voided_at')
+                                 ->whereMonth('paid_at', $i)
+                                 ->whereYear('paid_at', $this->selectedYear)
                                  ->sum('amount');
 
             $generalIncome = Income::where('income_date', 'like', $dbMonthString . '%')

@@ -176,10 +176,19 @@
                                     {{ $voucher->voucher_number }}
                                     <div class="text-[9px] text-gray-400 uppercase font-black">Due: {{ $voucher->due_date->format('M d, Y') }}</div>
                                 </td>
-                                <td class="px-6 py-4 font-black text-gray-900">Rs. {{ number_format($voucher->amount) }}</td>
+                                <td class="px-6 py-4 font-black text-gray-900">
+                                    Rs. {{ number_format($voucher->amount) }}
+                                    @if($voucher->status === 'partial')
+                                        <div class="text-[9px] text-amber-600 font-black uppercase">Rs. {{ number_format($voucher->balance_due) }} remaining</div>
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4 text-right whitespace-nowrap">
                                     @if($voucher->status === 'paid')
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-50 text-emerald-700 uppercase border border-emerald-100">Paid</span>
+                                    @elseif($voucher->status === 'partial')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-50 text-amber-700 uppercase border border-amber-100">Partial</span>
+                                    @elseif($voucher->status === 'cancelled')
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-gray-50 text-gray-600 uppercase border border-gray-200">Cancelled</span>
                                     @else
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black bg-red-50 text-red-700 uppercase border border-red-100">Unpaid</span>
                                     @endif

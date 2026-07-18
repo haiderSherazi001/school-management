@@ -10,7 +10,9 @@ class FeeVoucherPrintController extends Controller
 {
     public function show($id)
     {
-        $voucher = FeeVoucher::with(['student.studentProfile', 'class'])->findOrFail($id);
+        $voucher = FeeVoucher::with(['student.studentProfile', 'class', 'payments' => function ($query) {
+            $query->orderBy('paid_at');
+        }])->findOrFail($id);
         
         return view('admin.fees.print-voucher', compact('voucher'));
     }
