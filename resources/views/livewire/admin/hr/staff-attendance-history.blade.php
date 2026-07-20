@@ -27,7 +27,7 @@
             <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-yellow-500"></span> Late</span>
             <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-orange-500"></span> Half Day</span>
             <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-red-500"></span> Absent</span>
-            <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Leave</span>
+            <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-blue-500"></span> Leave (Single Day)</span>
             <span class="inline-flex items-center gap-1.5"><span class="w-3 h-3 rounded-full bg-gray-200"></span> No Record</span>
         </div>
 

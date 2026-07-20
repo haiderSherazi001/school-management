@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Designation extends Model
 {
-    protected $fillable = ['title', 'default_salary', 'department', 'is_active'];
+    protected $fillable = ['title', 'default_salary', 'department', 'is_active', 'paid_leave_days_per_month'];
 
     public function staffProfiles()
     {

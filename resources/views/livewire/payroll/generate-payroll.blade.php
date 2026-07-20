@@ -33,7 +33,7 @@
                 <div class="flex flex-col md:flex-row justify-between items-center gap-4">
                     <div>
                         <h3 class="text-lg font-bold text-gray-900">Monthly Payroll Run</h3>
-                        <p class="text-sm text-gray-500">Generate drafted payslips for all active staff members. You can edit bonuses/deductions before finalizing.</p>
+                        <p class="text-sm text-gray-500">Generate drafted payslips for all active and on-extended-leave staff members. You can edit bonuses/deductions before finalizing.</p>
                     </div>
                     
                     <div class="flex items-center gap-3 w-full md:w-auto">
@@ -87,7 +87,12 @@
                             @forelse($payslips as $slip)
                                 <tr class="hover:bg-gray-50 transition">
                                     <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="font-bold text-gray-900">{{ $slip->staff->name }}</div>
+                                        <div class="font-bold text-gray-900 flex items-center gap-2">
+                                            {{ $slip->staff->name }}
+                                            @if($slip->staff->staffProfile->employment_status === 'on_leave')
+                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-amber-50 text-amber-700 border border-amber-100">On Extended Leave</span>
+                                            @endif
+                                        </div>
                                         <div class="text-xs text-gray-500">{{ $slip->staff->staffProfile->designation->title ?? 'Unassigned' }} {{ $slip->staff->staffProfile->designation->department ? ('('.$slip->staff->staffProfile->designation->department.')') : 'Unassigned' }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700">

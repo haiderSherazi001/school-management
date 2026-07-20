@@ -32,14 +32,14 @@ class GeneratePayroll extends Component
             'billing_month' => 'required|date_format:Y-m',
         ]);
 
-        $activeStaff = User::role('staff')
+        $eligibleStaff = User::role('staff')
             ->whereHas('staffProfile', function ($query) {
-                $query->where('employment_status', 'active');
+                $query->whereIn('employment_status', ['active', 'on_leave']);
             })
-            ->with('staffProfile')
+            ->with('staffProfile.designation')
             ->get();
 
-        if ($activeStaff->isEmpty()) {
+        if ($eligibleStaff->isEmpty()) {
             session()->flash('error', 'No active staff members found to generate payroll.');
             return;
         }
@@ -49,38 +49,53 @@ class GeneratePayroll extends Component
 
         $generatedCount = 0;
 
-        foreach ($activeStaff as $staff) {
-            
+        foreach ($eligibleStaff as $staff) {
+
             $existingPayslip = Payslip::where('user_id', $staff->id)
                                       ->where('billing_month', $this->billing_month)
                                       ->first();
 
             if ($existingPayslip) {
-                continue; 
+                continue;
             }
 
             $baseSalary = $staff->staffProfile->salary ?? 0;
 
-            $fullAbsences = Attendance::where('user_id', $staff->id)
-                ->whereBetween('date', [$startDate, $endDate])
-                ->where('status', 'absent')
-                ->count();
-
-            $halfDays = Attendance::where('user_id', $staff->id)
-                ->whereBetween('date', [$startDate, $endDate])
-                ->where('status', 'half_day')
-                ->count();
-
-            $totalPenaltyDays = $fullAbsences + ($halfDays * 0.5);
-
-            $perDaySalary = $baseSalary > 0 ? ($baseSalary / 30) : 0;
-            $automatedDeduction = round($totalPenaltyDays * $perDaySalary, 2);
-
-            if ($automatedDeduction > $baseSalary) {
+            if ($staff->staffProfile->employment_status === 'on_leave') {
+                // Staff on extended leave get a payslip too, defaulting to fully
+                // deducted — admins can reduce the deduction via "Adjust Pay" if
+                // the school wants to pay them partially.
                 $automatedDeduction = $baseSalary;
-            }
+                $netPayable = 0;
+            } else {
+                $fullAbsences = Attendance::where('user_id', $staff->id)
+                    ->whereBetween('date', [$startDate, $endDate])
+                    ->where('status', 'absent')
+                    ->count();
 
-            $netPayable = $baseSalary - $automatedDeduction;
+                $halfDays = Attendance::where('user_id', $staff->id)
+                    ->whereBetween('date', [$startDate, $endDate])
+                    ->where('status', 'half_day')
+                    ->count();
+
+                $leaveQuota = $staff->staffProfile->effectivePaidLeaveDaysPerMonth();
+                $leaveDaysTaken = Attendance::where('user_id', $staff->id)
+                    ->whereBetween('date', [$startDate, $endDate])
+                    ->where('status', 'leave')
+                    ->count();
+                $excessLeaveDays = max(0, $leaveDaysTaken - $leaveQuota);
+
+                $totalPenaltyDays = $fullAbsences + ($halfDays * 0.5) + $excessLeaveDays;
+
+                $perDaySalary = $baseSalary > 0 ? ($baseSalary / 30) : 0;
+                $automatedDeduction = round($totalPenaltyDays * $perDaySalary, 2);
+
+                if ($automatedDeduction > $baseSalary) {
+                    $automatedDeduction = $baseSalary;
+                }
+
+                $netPayable = $baseSalary - $automatedDeduction;
+            }
 
             Payslip::create([
                 'user_id' => $staff->id,

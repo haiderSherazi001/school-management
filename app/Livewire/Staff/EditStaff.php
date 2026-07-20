@@ -18,7 +18,9 @@ class EditStaff extends Component
     
     public $designation_id = '';
     public $employment_status = '';
-    
+    public $paid_leave_days_per_month = null;
+    public $leave_note = '';
+
     public $qualification = '';
     public $phone = '';
     public $salary = '';
@@ -39,6 +41,8 @@ class EditStaff extends Component
             $this->cnic = $profile->cnic;
             $this->designation_id = $profile->designation_id;
             $this->employment_status = $profile->employment_status ?? 'active';
+            $this->paid_leave_days_per_month = $profile->paid_leave_days_per_month;
+            $this->leave_note = $profile->leave_note ?? '';
             $this->qualification = $profile->qualification;
             $this->phone = $profile->phone;
             $this->salary = $profile->salary;
@@ -57,7 +61,9 @@ class EditStaff extends Component
             
             'designation_id' => 'required|exists:designations,id',
             'employment_status' => 'required|in:active,on_leave,resigned,terminated',
-            
+            'paid_leave_days_per_month' => 'nullable|integer|min:0|max:31',
+            'leave_note' => 'nullable|string|max:1000',
+
             'qualification' => 'required|string',
             'phone' => 'required|string|max:11',
             'salary' => 'required|numeric|min:0',
@@ -76,7 +82,9 @@ class EditStaff extends Component
             
             'designation_id' => $this->designation_id,
             'employment_status' => $this->employment_status,
-            
+            'paid_leave_days_per_month' => $this->paid_leave_days_per_month !== '' ? $this->paid_leave_days_per_month : null,
+            'leave_note' => $this->leave_note ?: null,
+
             'qualification' => $this->qualification,
             'phone' => $this->phone,
             'salary' => $this->salary,

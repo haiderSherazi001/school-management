@@ -58,7 +58,7 @@
                                     <li class="flex items-start gap-2 bg-orange-50 text-orange-800 p-2 rounded-md border border-orange-100"><span class="mt-0.5 text-orange-500">&bull;</span> {{ $overdueInvoices }} fee invoice(s) overdue.</li>
                                 @endif
                                 @if($staffOnLeave > 0)
-                                    <li class="flex items-start gap-2 bg-blue-50 text-blue-800 p-2 rounded-md border border-blue-100"><span class="mt-0.5 text-blue-500">&bull;</span> {{ $staffOnLeave }} staff on leave.</li>
+                                    <li class="flex items-start gap-2 bg-blue-50 text-blue-800 p-2 rounded-md border border-blue-100"><span class="mt-0.5 text-blue-500">&bull;</span> {{ $staffOnLeave }} staff on extended leave.</li>
                                 @endif
                             </ul>
                         @endif

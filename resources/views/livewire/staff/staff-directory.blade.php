@@ -79,7 +79,7 @@
 
         <div class="border-b border-gray-200">
             <nav class="-mb-px flex space-x-8 overflow-x-auto no-scrollbar">
-                @foreach(['active' => 'Active Staff', 'on_leave' => 'On Leave', 'resigned' => 'Resigned', 'terminated' => 'Terminated', 'all' => 'All Records'] as $key => $label)
+                @foreach(['active' => 'Active Staff', 'on_leave' => 'On Extended Leave', 'resigned' => 'Resigned', 'terminated' => 'Terminated', 'all' => 'All Records'] as $key => $label)
                     <button wire:click="setFilter('{{ $key }}')" class="{{ $statusFilter === $key ? 'border-indigo-600 text-indigo-600 font-black' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 font-bold' }} whitespace-nowrap py-4 px-1 border-b-2 text-sm transition-all duration-200">
                         {{ $label }}
                     </button>
@@ -133,10 +133,16 @@
                                             'resigned' => 'bg-gray-100 text-gray-600 border-gray-200',
                                             'terminated' => 'bg-red-50 text-red-700 border-red-100'
                                         ];
+                                        $statusLabels = [
+                                            'active' => 'active',
+                                            'on_leave' => 'on extended leave',
+                                            'resigned' => 'resigned',
+                                            'terminated' => 'terminated',
+                                        ];
                                         $status = $staff->staffProfile->employment_status ?? 'active';
                                     @endphp
                                     <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[9px] font-black uppercase border {{ $statusColors[$status] }} mt-1">
-                                        {{ str_replace('_', ' ', $status) }}
+                                        {{ $statusLabels[$status] ?? str_replace('_', ' ', $status) }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap">

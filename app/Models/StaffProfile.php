@@ -14,6 +14,8 @@ class StaffProfile extends Model
         'cnic',
         'designation_id',
         'employment_status',
+        'paid_leave_days_per_month',
+        'leave_note',
         'qualification',
         'phone',
         'personal_email',
@@ -34,5 +36,12 @@ class StaffProfile extends Model
     public function designation()
     {
         return $this->belongsTo(Designation::class, 'designation_id');
+    }
+
+    public function effectivePaidLeaveDaysPerMonth(): int
+    {
+        return $this->paid_leave_days_per_month
+            ?? $this->designation?->paid_leave_days_per_month
+            ?? 2;
     }
 }
