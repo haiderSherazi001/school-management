@@ -38,12 +38,6 @@ new #[Layout('layouts.guest')] class extends Component
         <h2 class="mt-6 text-3xl font-extrabold text-gray-900">
             Sign in to your account
         </h2>
-        <p class="mt-2 text-sm text-gray-600">
-            Or
-            <a href="{{ route('register') }}" wire:navigate class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
-                create a new account
-            </a>
-        </p>
     </div>
 
     <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">

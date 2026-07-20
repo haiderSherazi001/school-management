@@ -8,8 +8,11 @@ use Livewire\Attributes\Computed;
 use App\Models\User;
 use App\Models\FeeVoucher;
 use App\Models\FeeVoucherItem;
+use App\Models\Payment;
 use App\Models\Setting;
 use App\Models\Enrollment;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 #[Layout('layouts.app')]
 class FeeCollection extends Component
@@ -27,7 +30,14 @@ class FeeCollection extends Component
 
     public $bulkClassId = '';
     public $bulkBillingMonth = '';
+    public $bulkPaymentMethod = 'cash';
     public $showBulkCollectionModal = false;
+
+    public $activePaymentVoucherId = null;
+    public $paymentAmount = '';
+    public $paymentMethod = 'cash';
+    public $paymentReference = '';
+    public $paymentNote = '';
 
     public function mount()
     {
@@ -39,6 +49,7 @@ class FeeCollection extends Component
         $this->showBulkCollectionModal = true;
         $this->bulkClassId = '';
         $this->bulkBillingMonth = date('F Y');
+        $this->bulkPaymentMethod = 'cash';
         $this->resetValidation();
         $this->dispatch('scroll-to-bulk-modal');
     }
@@ -54,30 +65,97 @@ class FeeCollection extends Component
         $this->selectedStudentId = $id;
         $this->search = '';
         $this->activeVoucherId = null;
+        $this->activePaymentVoucherId = null;
     }
 
-    public function markAsPaid($voucherId)
+    public function openPaymentForm($voucherId)
     {
         $voucher = FeeVoucher::findOrFail($voucherId);
-        
-        $voucher->update([
-            'status' => 'paid',
-            'paid_at' => now(),
+
+        $this->activePaymentVoucherId = $voucherId;
+        $this->paymentAmount = number_format($voucher->balance_due, 2, '.', '');
+        $this->paymentMethod = 'cash';
+        $this->paymentReference = '';
+        $this->paymentNote = '';
+        $this->resetValidation();
+    }
+
+    public function closePaymentForm()
+    {
+        $this->activePaymentVoucherId = null;
+        $this->paymentAmount = '';
+        $this->paymentReference = '';
+        $this->paymentNote = '';
+    }
+
+    public function recordPayment()
+    {
+        $this->validate([
+            'paymentAmount' => ['required', 'numeric', 'min:0.01'],
+            'paymentMethod' => ['required', 'in:cash,bank,other'],
+            'paymentReference' => ['nullable', 'string', 'max:255'],
+            'paymentNote' => ['nullable', 'string', 'max:500'],
         ]);
 
-        session()->flash('success', "Payment of Rs. {$voucher->amount} collected for {$voucher->billing_month}!");
+        $recordedAmount = $this->paymentAmount;
+
+        DB::transaction(function () {
+            $voucher = FeeVoucher::whereKey($this->activePaymentVoucherId)->lockForUpdate()->firstOrFail();
+
+            if (in_array($voucher->status, ['paid', 'cancelled'])) {
+                throw ValidationException::withMessages([
+                    'paymentAmount' => 'This voucher cannot accept further payments.',
+                ]);
+            }
+
+            $balance = $voucher->balance_due;
+
+            if ($this->paymentAmount > $balance) {
+                throw ValidationException::withMessages([
+                    'paymentAmount' => 'Amount exceeds remaining balance of Rs. ' . number_format($balance, 2),
+                ]);
+            }
+
+            $voucher->payments()->create([
+                'amount' => $this->paymentAmount,
+                'method' => $this->paymentMethod,
+                'reference_number' => $this->paymentReference ?: null,
+                'note' => $this->paymentNote ?: null,
+                'collected_by' => auth()->id(),
+                'paid_at' => now(),
+            ]);
+
+            $voucher->recalculateStatus();
+        });
+
+        session()->flash('success', 'Payment of Rs. ' . number_format($recordedAmount, 2) . ' recorded.');
+
+        $this->closePaymentForm();
     }
 
     public function revertPayment($voucherId)
     {
         $voucher = FeeVoucher::findOrFail($voucherId);
-        
-        $voucher->update([
-            'status' => 'unpaid',
-            'paid_at' => null,
+
+        $payment = $voucher->payments()
+            ->whereNull('voided_at')
+            ->orderByDesc('paid_at')
+            ->orderByDesc('id')
+            ->first();
+
+        if (!$payment) {
+            session()->flash('error', 'No active payment to undo for this voucher.');
+            return;
+        }
+
+        $payment->update([
+            'voided_at' => now(),
+            'voided_by' => auth()->id(),
         ]);
 
-        session()->flash('success', "Payment reverted to unpaid.");
+        $voucher->recalculateStatus();
+
+        session()->flash('success', 'Payment of Rs. ' . number_format($payment->amount, 2) . ' has been voided.');
     }
 
     public function markBulkPaid()
@@ -85,6 +163,7 @@ class FeeCollection extends Component
         $this->validate([
             'bulkClassId' => 'required',
             'bulkBillingMonth' => 'required|string',
+            'bulkPaymentMethod' => 'required|in:cash,bank,other',
         ]);
 
         // Trim to prevent invisible space issues
@@ -92,27 +171,42 @@ class FeeCollection extends Component
 
         $vouchers = FeeVoucher::where('class_id', $this->bulkClassId)
             ->where('billing_month', $cleanMonth)
-            ->where('status', 'unpaid')
+            ->whereIn('status', ['unpaid', 'partial'])
             ->get();
 
         if ($vouchers->isEmpty()) {
-            session()->flash('error', "No unpaid vouchers found for the selected class in {$cleanMonth}.");
+            session()->flash('error', "No pending vouchers found for the selected class in {$cleanMonth}.");
             return;
         }
 
-        $count = $vouchers->count();
+        $count = 0;
         $totalAmount = 0;
 
-        foreach ($vouchers as $voucher) {
-            $totalAmount += $voucher->amount;
-            $voucher->update([
-                'status' => 'paid',
-                'paid_at' => now(),
-            ]);
-        }
+        DB::transaction(function () use ($vouchers, &$count, &$totalAmount) {
+            foreach ($vouchers as $listedVoucher) {
+                $voucher = FeeVoucher::whereKey($listedVoucher->id)->lockForUpdate()->first();
+                $balance = $voucher->balance_due;
 
-        session()->flash('success', "Successfully collected payments for {$count} vouchers totaling Rs. " . number_format($totalAmount) . "!");
-        
+                if ($balance <= 0) {
+                    continue;
+                }
+
+                $voucher->payments()->create([
+                    'amount' => $balance,
+                    'method' => $this->bulkPaymentMethod,
+                    'collected_by' => auth()->id(),
+                    'paid_at' => now(),
+                ]);
+
+                $voucher->recalculateStatus();
+
+                $count++;
+                $totalAmount += $balance;
+            }
+        });
+
+        session()->flash('success', "Successfully collected payments for {$count} vouchers totaling Rs. " . number_format($totalAmount, 2) . "!");
+
         $this->closeBulkModal();
     }
 
@@ -138,12 +232,19 @@ class FeeCollection extends Component
 
         $voucher = FeeVoucher::findOrFail($this->activeVoucherId);
 
+        if (in_array($voucher->status, ['paid', 'cancelled'])) {
+            session()->flash('error', 'You cannot modify a voucher that has already been paid.');
+            $this->closeAddItemForm();
+            return;
+        }
+
         $voucher->items()->create([
             'title' => $this->newItemTitle,
             'amount' => $this->newItemAmount,
         ]);
 
         $voucher->increment('amount', $this->newItemAmount);
+        $voucher->recalculateStatus();
 
         session()->flash('success', "Added Rs. {$this->newItemAmount} ({$this->newItemTitle}) to the voucher.");
 
@@ -164,7 +265,7 @@ class FeeCollection extends Component
         ]);
 
         $currentSession = Setting::get('current_session', date('Y') . '-' . (date('Y') + 1));
-        
+
         $enrollment = Enrollment::where('user_id', $this->selectedStudentId)
             ->where('academic_session', $currentSession)
             ->first();
@@ -175,7 +276,7 @@ class FeeCollection extends Component
             return;
         }
 
-        $currentMonth = date('F Y'); 
+        $currentMonth = date('F Y');
         $voucherNumber = 'INST-' . date('Ym') . '-' . str_pad($this->selectedStudentId, 4, '0', STR_PAD_LEFT) . '-' . rand(100, 999);
 
         $voucher = FeeVoucher::create([
@@ -205,19 +306,20 @@ class FeeCollection extends Component
     {
         $voucher = FeeVoucher::findOrFail($voucherId);
 
-        if ($voucher->status === 'paid') {
+        if (in_array($voucher->status, ['paid', 'cancelled'])) {
             session()->flash('error', 'You cannot modify a voucher that has already been paid.');
             return;
         }
 
         $item = FeeVoucherItem::where('fee_voucher_id', $voucherId)->findOrFail($itemId);
-        
+
         $amountToDeduct = $item->amount;
         $title = $item->title;
 
         $item->delete();
 
         $voucher->decrement('amount', $amountToDeduct);
+        $voucher->recalculateStatus();
 
         session()->flash('success', "Removed {$title} (Rs. {$amountToDeduct}) from the voucher.");
     }
@@ -233,7 +335,8 @@ class FeeCollection extends Component
 
         $vouchers = FeeVoucher::where('class_id', $this->bulkClassId)
             ->where('billing_month', $cleanMonth)
-            ->where('status', 'unpaid')
+            ->whereIn('status', ['unpaid', 'partial'])
+            ->with('payments')
             ->get();
 
         $users = User::whereIn('id', $vouchers->pluck('user_id'))->pluck('name', 'id');
@@ -266,17 +369,28 @@ class FeeCollection extends Component
     #[Computed]
     public function defaulters()
     {
+        $collectedSubquery = Payment::selectRaw('COALESCE(SUM(payments.amount), 0)')
+            ->join('fee_vouchers', 'fee_vouchers.id', '=', 'payments.fee_voucher_id')
+            ->whereColumn('fee_vouchers.user_id', 'users.id')
+            ->whereNull('payments.voided_at')
+            ->whereIn('fee_vouchers.status', ['unpaid', 'partial']);
+
         return User::role('Student')
             ->whereHas('feeVouchers', function($q) {
-                $q->where('status', 'unpaid'); 
+                $q->whereIn('status', ['unpaid', 'partial']);
             })
-            ->withSum(['feeVouchers as total_due' => function($q) {
-                $q->where('status', 'unpaid');
-            }], 'amount') 
+            ->withSum(['feeVouchers as total_billed' => function($q) {
+                $q->whereIn('status', ['unpaid', 'partial']);
+            }], 'amount')
+            ->addSelect(['total_collected' => $collectedSubquery])
             ->with('studentProfile')
-            ->orderByDesc('total_due') 
-            ->limit(15) 
-            ->get();
+            ->get()
+            ->each(function ($student) {
+                $student->total_due = (float) $student->total_billed - (float) $student->total_collected;
+            })
+            ->sortByDesc('total_due')
+            ->take(15)
+            ->values();
     }
 
     #[Computed]
@@ -286,10 +400,17 @@ class FeeCollection extends Component
             return null;
         }
 
-        return User::with(['studentProfile', 'feeVouchers' => function($query) {
-            $query->orderByRaw("FIELD(status, 'unpaid', 'paid')")->orderBy('due_date', 'desc');
-        }, 'feeVouchers.class', 'feeVouchers.items'])
-        ->findOrFail($this->selectedStudentId);
+        return User::with([
+            'studentProfile',
+            'feeVouchers' => function($query) {
+                $query->orderByRaw("FIELD(status, 'unpaid', 'partial', 'paid', 'cancelled')")->orderBy('due_date', 'desc');
+            },
+            'feeVouchers.class',
+            'feeVouchers.items',
+            'feeVouchers.payments' => function($query) {
+                $query->orderByDesc('paid_at');
+            },
+        ])->findOrFail($this->selectedStudentId);
     }
 
     #[Computed]

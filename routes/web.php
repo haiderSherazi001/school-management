@@ -34,6 +34,7 @@ use App\Livewire\Admin\Academics\ManageExams;
 use App\Livewire\Admin\Academics\ManageSubjects;
 use App\Livewire\Admin\Academics\ReportCards; 
 use App\Livewire\Admin\HR\StaffAttendance;
+use App\Livewire\Admin\HR\StaffAttendanceHistory;
 
 Route::view('/', 'welcome');
 
@@ -90,6 +91,7 @@ Route::middleware(['auth', 'verified', 'role:Admin'])->group(function () {
     Route::get('/reports/financial-ledger', FinancialLedger::class)->name('reports.financial');
 
     Route::get('/hr/attendance', StaffAttendance::class)->name('hr.attendance');
+    Route::get('/hr/attendance/history', StaffAttendanceHistory::class)->name('hr.attendance.history');
 
     Route::get('/finance/expenses', ExpenseManager::class)->name('finance.expenses');
     Route::get('/finance/income', IncomeManager::class)->name('finance.income');

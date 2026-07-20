@@ -4,6 +4,7 @@ namespace App\Livewire\Student;
 
 use Livewire\Component;
 use App\Models\User;
+use App\Models\Payment;
 use Livewire\WithPagination;
 use Livewire\Attributes\Layout;
 
@@ -55,12 +56,21 @@ class StudentDirectory extends Component
                     $subQuery->where('status', $this->statusFilter);
                 });
             })
-            ->with(['studentProfile', 'enrollments.class']) 
-            ->withSum(['feeVouchers as pending_dues' => function($query) {
-                $query->where('status', 'unpaid');
+            ->with(['studentProfile', 'enrollments.class'])
+            ->withSum(['feeVouchers as total_billed' => function($query) {
+                $query->whereIn('status', ['unpaid', 'partial']);
             }], 'amount')
-            ->latest() 
-            ->paginate(10);
+            ->addSelect(['total_collected' => Payment::selectRaw('COALESCE(SUM(payments.amount), 0)')
+                ->join('fee_vouchers', 'fee_vouchers.id', '=', 'payments.fee_voucher_id')
+                ->whereColumn('fee_vouchers.user_id', 'users.id')
+                ->whereNull('payments.voided_at')
+                ->whereIn('fee_vouchers.status', ['unpaid', 'partial'])])
+            ->latest()
+            ->paginate(10)
+            ->through(function ($student) {
+                $student->pending_dues = max(0, (float) $student->total_billed - (float) $student->total_collected);
+                return $student;
+            });
 
         return view('livewire.student.student-directory', [
             'students' => $students

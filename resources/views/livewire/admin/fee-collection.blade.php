@@ -42,7 +42,7 @@
                                 <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                             </div>
                             <h3 class="text-2xl font-black text-emerald-900 tracking-tight">Bulk Collect Fees</h3>
-                            <p class="text-sm text-emerald-700 font-medium mt-2 leading-relaxed">Select a class and billing month to locate all unpaid vouchers. Mark them all as paid with a single click to instantly balance your Ledger.</p>
+                            <p class="text-sm text-emerald-700 font-medium mt-2 leading-relaxed">Select a class and billing month to locate all pending vouchers. Collect the remaining balance for each one with a single click to instantly balance your Ledger.</p>
                             <button wire:click="closeBulkModal" class="mt-6 text-sm font-bold text-gray-500 hover:text-gray-800 transition py-2 px-4 bg-white hover:bg-gray-50 border border-gray-200 rounded-lg shadow-sm">
                                 Cancel & Close
                             </button>
@@ -67,6 +67,16 @@
                                     @error('bulkBillingMonth') <span class="text-red-500 text-xs font-bold block mt-2">{{ $message }}</span> @enderror
                                 </div>
 
+                                <div class="w-full sm:w-1/4">
+                                    <label class="block text-xs font-bold text-emerald-800 uppercase tracking-wider mb-2">Method</label>
+                                    <select wire:model="bulkPaymentMethod" class="w-full rounded-lg border-emerald-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 font-medium">
+                                        <option value="cash">Cash</option>
+                                        <option value="bank">Bank</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                    @error('bulkPaymentMethod') <span class="text-red-500 text-xs font-bold block mt-2">{{ $message }}</span> @enderror
+                                </div>
+
                                 <div class="w-full sm:w-auto">
                                     <button type="button" wire:click="markBulkPaid" wire:loading.attr="disabled" wire:target="markBulkPaid" class="w-full whitespace-nowrap flex justify-center items-center py-2.5 px-6 border border-transparent rounded-lg shadow-sm text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition">
                                         <span wire:loading.remove wire:target="markBulkPaid">Collect All</span>
@@ -83,7 +93,7 @@
                                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                                 Ready to collect: <strong>{{ $this->pendingVoucherDetails->count() }} Students</strong>
                                             </span>
-                                            <span class="text-base font-black text-emerald-900 bg-emerald-200 px-3 py-1 rounded-md">Total: Rs. {{ number_format($this->pendingVoucherDetails->sum('amount')) }}</span>
+                                            <span class="text-base font-black text-emerald-900 bg-emerald-200 px-3 py-1 rounded-md">Total: Rs. {{ number_format($this->pendingVoucherDetails->sum('balance_due')) }}</span>
                                         </div>
                                         <div class="max-h-64 overflow-y-auto border border-gray-200 rounded-xl shadow-inner scrollbar-thin scrollbar-thumb-gray-200 scrollbar-track-transparent">
                                             <table class="min-w-full divide-y divide-gray-200 text-sm">
@@ -99,7 +109,7 @@
                                                     <tr class="hover:bg-emerald-50/50 transition duration-150">
                                                         <td class="px-5 py-3 text-gray-900 font-bold">{{ $voucher->student_name }}</td>
                                                         <td class="px-5 py-3 text-center text-gray-500 text-xs font-mono">{{ $voucher->voucher_number }}</td>
-                                                        <td class="px-5 py-3 text-right font-black text-emerald-700 text-base">Rs. {{ number_format($voucher->amount) }}</td>
+                                                        <td class="px-5 py-3 text-right font-black text-emerald-700 text-base">Rs. {{ number_format($voucher->balance_due) }}</td>
                                                     </tr>
                                                     @endforeach
                                                 </tbody>
@@ -111,7 +121,7 @@
                                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                             </div>
                                             <h4 class="text-sm font-bold text-gray-900">All Clear!</h4>
-                                            <p class="text-xs font-medium text-gray-500 mt-1 max-w-sm mx-auto">No unpaid vouchers found for this class in {{ $bulkBillingMonth }}.</p>
+                                            <p class="text-xs font-medium text-gray-500 mt-1 max-w-sm mx-auto">No pending vouchers found for this class in {{ $bulkBillingMonth }}.</p>
                                         </div>
                                     @endif
                                 </div>
@@ -235,24 +245,38 @@
 
                             <div class="p-0">
                                 <ul class="divide-y divide-gray-200">
+                                    @php
+                                        $statusBadges = [
+                                            'unpaid' => 'bg-yellow-100 text-yellow-800 border-yellow-200',
+                                            'partial' => 'bg-amber-100 text-amber-800 border-amber-200',
+                                            'paid' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+                                            'cancelled' => 'bg-gray-100 text-gray-600 border-gray-200',
+                                        ];
+                                    @endphp
                                     @forelse($this->studentLedger->feeVouchers as $voucher)
-                                        <li x-data="{ showItems: false }" class="p-6 hover:bg-gray-50 transition relative">
-                                            
+                                        <li x-data="{ showItems: false, showPayments: false }" class="p-6 hover:bg-gray-50 transition relative">
+
                                             <div class="flex items-start justify-between">
                                                 <div>
                                                     <div class="flex items-center">
                                                         <h4 class="text-lg font-semibold text-gray-900">{{ $voucher->billing_month }}</h4>
-                                                        @if($voucher->status === 'unpaid')
-                                                            <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800 border border-yellow-200">Pending</span>
-                                                        @else
-                                                            <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">Paid on {{ $voucher->paid_at->format('M d, Y') }}</span>
-                                                        @endif
+                                                        <span class="ml-3 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold border {{ $statusBadges[$voucher->status] }}">
+                                                            @if($voucher->status === 'unpaid')
+                                                                Pending
+                                                            @elseif($voucher->status === 'partial')
+                                                                Partially Paid &mdash; Rs. {{ number_format($voucher->amount_paid) }} of Rs. {{ number_format($voucher->amount) }}
+                                                            @elseif($voucher->status === 'paid')
+                                                                Paid on {{ $voucher->paid_at?->format('M d, Y') }}
+                                                            @else
+                                                                Cancelled
+                                                            @endif
+                                                        </span>
                                                     </div>
                                                     <div class="mt-1 text-sm font-medium text-gray-500">
                                                         Voucher: {{ $voucher->voucher_number }} &bull; Due: {{ $voucher->due_date->format('M d, Y') }}
                                                     </div>
 
-                                                    <div class="mt-3 flex gap-4">
+                                                    <div class="mt-3 flex flex-wrap gap-4">
                                                         @if($voucher->items->count() > 0)
                                                             <button @click="showItems = !showItems" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1">
                                                                 <span x-text="showItems ? 'Hide Breakdown' : 'View Breakdown ({{ $voucher->items->count() }} items)'"></span>
@@ -260,7 +284,14 @@
                                                             </button>
                                                         @endif
 
-                                                        @if($voucher->status === 'unpaid' && $activeVoucherId !== $voucher->id)
+                                                        @if($voucher->payments->count() > 0)
+                                                            <button @click="showPayments = !showPayments" class="text-xs font-bold text-emerald-600 hover:text-emerald-800 flex items-center gap-1">
+                                                                <span x-text="showPayments ? 'Hide Payment History' : 'Payment History ({{ $voucher->payments->count() }})'"></span>
+                                                                <svg class="w-4 h-4 transform transition-transform" :class="showPayments ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                                            </button>
+                                                        @endif
+
+                                                        @if(in_array($voucher->status, ['unpaid', 'partial']) && $activeVoucherId !== $voucher->id)
                                                             <button wire:click="openAddItemForm({{ $voucher->id }})" class="text-xs font-bold text-orange-600 hover:text-orange-800 flex items-center gap-1">
                                                                 + Add Extra Charge
                                                             </button>
@@ -269,22 +300,31 @@
                                                 </div>
 
                                                 <div class="text-right flex flex-col items-end">
-                                                    <span class="text-2xl font-black text-gray-900 mb-2">Rs. {{ number_format($voucher->amount) }}</span>
-                                                    
-                                                    @if($voucher->status === 'unpaid')
-                                                        <button wire:click="markAsPaid({{ $voucher->id }})" wire:loading.attr="disabled" class="inline-flex items-center px-4 py-2 bg-indigo-600 border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-indigo-700 transition shadow-sm">
-                                                            <span wire:loading.remove wire:target="markAsPaid({{ $voucher->id }})">Collect Payment</span>
-                                                            <span wire:loading wire:target="markAsPaid({{ $voucher->id }})">Processing...</span>
-                                                        </button>
+                                                    <span class="text-2xl font-black text-gray-900">Rs. {{ number_format($voucher->amount) }}</span>
+                                                    @if($voucher->amount_paid > 0 && $voucher->status !== 'paid')
+                                                        <span class="text-xs font-bold text-emerald-600 mt-0.5">Rs. {{ number_format($voucher->amount_paid) }} paid</span>
+                                                        <span class="text-xs font-bold text-red-500 mb-2">Rs. {{ number_format($voucher->balance_due) }} remaining</span>
                                                     @else
-                                                        <button wire:click="revertPayment({{ $voucher->id }})" class="text-xs font-medium text-gray-400 hover:text-red-600 underline transition">
-                                                            Revert to Unpaid
+                                                        <span class="mb-2"></span>
+                                                    @endif
+
+                                                    @if(in_array($voucher->status, ['unpaid', 'partial']) && $activePaymentVoucherId !== $voucher->id)
+                                                        <button wire:click="openPaymentForm({{ $voucher->id }})" wire:loading.attr="disabled" class="inline-flex items-center px-4 py-2 bg-emerald-600 border border-transparent rounded-md font-bold text-xs text-white uppercase tracking-widest hover:bg-emerald-700 transition shadow-sm">
+                                                            Record Payment
+                                                        </button>
+                                                    @endif
+
+                                                    @if($voucher->status !== 'cancelled' && $voucher->payments->whereNull('voided_at')->count() > 0)
+                                                        <button wire:click="revertPayment({{ $voucher->id }})"
+                                                                wire:confirm="Undo the last payment of Rs. {{ number_format($voucher->payments->whereNull('voided_at')->sortByDesc('paid_at')->first()->amount ?? 0) }}?"
+                                                                class="text-xs font-medium text-gray-400 hover:text-red-600 underline transition mt-2">
+                                                            Undo Last Payment
                                                         </button>
                                                     @endif
 
                                                     <a href="{{ route('fees.print', $voucher->id) }}" target="_blank" class="inline-flex items-center px-3 py-2 bg-white border border-gray-300 rounded-md font-bold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 transition mt-2">
                                                         Print Receipt
-                                                    </a> 
+                                                    </a>
                                                 </div>
                                             </div>
 
@@ -296,8 +336,8 @@
                                                                 <td class="py-2 text-gray-600 w-full">{{ $item->title }}</td>
                                                                 <td class="py-2 text-right font-bold text-gray-900 whitespace-nowrap">Rs. {{ number_format($item->amount) }}</td>
                                                                 <td class="py-2 pl-3 text-right w-8">
-                                                                    @if($voucher->status === 'unpaid')
-                                                                        <button wire:click="removeCustomItem({{ $item->id }}, {{ $voucher->id }})" 
+                                                                    @if(in_array($voucher->status, ['unpaid', 'partial']))
+                                                                        <button wire:click="removeCustomItem({{ $item->id }}, {{ $voucher->id }})"
                                                                                 wire:confirm="Are you sure you want to remove '{{ $item->title }}' from this bill?"
                                                                                 class="text-gray-300 hover:text-red-500 transition" title="Remove Item">
                                                                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
@@ -310,10 +350,74 @@
                                                 </table>
                                             </div>
 
+                                            <div x-show="showPayments" x-collapse class="mt-4 bg-white border border-gray-200 rounded-md p-4 shadow-inner">
+                                                <table class="w-full text-sm">
+                                                    <thead>
+                                                        <tr class="text-left text-[10px] font-bold text-gray-400 uppercase tracking-wider">
+                                                            <th class="pb-2">Date</th>
+                                                            <th class="pb-2">Method</th>
+                                                            <th class="pb-2">Collected By</th>
+                                                            <th class="pb-2 text-right">Amount</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach($voucher->payments as $payment)
+                                                            <tr class="border-b border-gray-100 last:border-0 {{ $payment->voided_at ? 'opacity-50' : '' }}">
+                                                                <td class="py-2 text-gray-600">{{ $payment->paid_at->format('M d, Y') }}</td>
+                                                                <td class="py-2 text-gray-600 capitalize">{{ $payment->method }}</td>
+                                                                <td class="py-2 text-gray-600">{{ $payment->collector->name ?? 'System' }}</td>
+                                                                <td class="py-2 text-right font-bold {{ $payment->voided_at ? 'text-gray-400 line-through' : 'text-gray-900' }} whitespace-nowrap">
+                                                                    Rs. {{ number_format($payment->amount, 2) }}
+                                                                    @if($payment->voided_at)
+                                                                        <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase bg-red-50 text-red-600 border border-red-100 no-underline">Voided</span>
+                                                                    @endif
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                            @if($activePaymentVoucherId === $voucher->id)
+                                                <div class="mt-4 bg-emerald-50 border border-emerald-200 rounded-md p-4 relative">
+                                                    <h5 class="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-3">Record a Payment &mdash; Balance Due: Rs. {{ number_format($voucher->balance_due) }}</h5>
+
+                                                    <form wire:submit="recordPayment" class="flex flex-col sm:flex-row gap-3 items-start">
+                                                        <div class="w-full sm:w-32">
+                                                            <input type="number" step="0.01" wire:model="paymentAmount" placeholder="Amount (Rs.)" class="w-full rounded-md border-emerald-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm">
+                                                            @error('paymentAmount') <span class="text-red-500 text-[10px] font-bold block mt-1">{{ $message }}</span> @enderror
+                                                        </div>
+                                                        <div class="w-full sm:w-32">
+                                                            <select wire:model="paymentMethod" class="w-full rounded-md border-emerald-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm">
+                                                                <option value="cash">Cash</option>
+                                                                <option value="bank">Bank</option>
+                                                                <option value="other">Other</option>
+                                                            </select>
+                                                            @error('paymentMethod') <span class="text-red-500 text-[10px] font-bold block mt-1">{{ $message }}</span> @enderror
+                                                        </div>
+                                                        <div class="flex-1 w-full">
+                                                            <input type="text" wire:model="paymentReference" placeholder="Reference No. (optional)" class="w-full rounded-md border-emerald-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm">
+                                                            @error('paymentReference') <span class="text-red-500 text-[10px] font-bold block mt-1">{{ $message }}</span> @enderror
+                                                        </div>
+                                                        <div class="flex-1 w-full">
+                                                            <input type="text" wire:model="paymentNote" placeholder="Note (optional)" class="w-full rounded-md border-emerald-300 shadow-sm focus:border-emerald-500 focus:ring-emerald-500 sm:text-sm">
+                                                            @error('paymentNote') <span class="text-red-500 text-[10px] font-bold block mt-1">{{ $message }}</span> @enderror
+                                                        </div>
+                                                        <div class="flex gap-2 w-full sm:w-auto mt-1 sm:mt-0">
+                                                            <button type="button" wire:click="closePaymentForm" class="px-3 py-2 bg-white border border-emerald-300 rounded-md text-sm font-bold text-emerald-700 hover:bg-emerald-100 transition shadow-sm flex-1 sm:flex-none">Cancel</button>
+                                                            <button type="submit" wire:loading.attr="disabled" class="px-3 py-2 bg-emerald-600 rounded-md text-sm font-bold text-white hover:bg-emerald-700 transition shadow-sm flex-1 sm:flex-none">
+                                                                <span wire:loading.remove wire:target="recordPayment">Collect</span>
+                                                                <span wire:loading wire:target="recordPayment">...</span>
+                                                            </button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            @endif
+
                                             @if($activeVoucherId === $voucher->id)
                                                 <div class="mt-4 bg-orange-50 border border-orange-200 rounded-md p-4 relative">
                                                     <h5 class="text-xs font-bold text-orange-800 uppercase tracking-wider mb-3">Add Custom Charge to this Bill</h5>
-                                                    
+
                                                     <form wire:submit="saveCustomItem" class="flex flex-col sm:flex-row gap-3 items-start">
                                                         <div class="flex-1 w-full">
                                                             <input type="text" wire:model="newItemTitle" placeholder="Reason (e.g. Late Fine)" class="w-full rounded-md border-orange-300 shadow-sm focus:border-orange-500 focus:ring-orange-500 sm:text-sm">

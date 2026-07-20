@@ -21,7 +21,9 @@ class DocumentManager extends Component
     {
         $this->validate([
             'title' => 'required|string|max:255',
-            'file' => 'required|file|max:5120',
+            'file' => 'required|file|mimes:pdf,jpg,jpeg,png,docx|max:5120',
+        ], [
+            'file.mimes' => 'Only PDF, JPG, PNG, and DOCX files are allowed.',
         ]);
 
         $path = $this->file->store('documents', 'public');

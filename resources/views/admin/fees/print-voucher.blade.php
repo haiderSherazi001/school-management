@@ -35,6 +35,10 @@
                     <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
                         <span class="text-8xl font-black text-green-600 uppercase tracking-widest transform -rotate-12 border-8 border-green-600 p-4 rounded-lg">PAID</span>
                     </div>
+                @elseif($voucher->status === 'partial')
+                    <div class="absolute inset-0 flex items-center justify-center opacity-10 pointer-events-none">
+                        <span class="text-7xl font-black text-amber-600 uppercase tracking-widest transform -rotate-12 border-8 border-amber-600 p-4 rounded-lg">PARTIALLY PAID</span>
+                    </div>
                 @endif
 
                 <div class="flex justify-between items-start border-b-2 border-gray-800 pb-4 mb-4">
@@ -101,14 +105,21 @@
                     <div class="bg-gray-50 p-3 rounded border border-gray-200 w-1/2">
                         <p class="text-xs text-gray-500 uppercase tracking-wider font-bold mb-1">Important Notice</p>
                         <p class="text-xs text-gray-600">Please pay the dues before the deadline. Late payments may be subject to a fine in the next billing cycle.</p>
-                        <p class="text-sm font-bold mt-2 {{ $voucher->status === 'paid' ? 'text-green-600' : 'text-red-600' }}">
+                        <p class="text-sm font-bold mt-2 {{ $voucher->status === 'paid' ? 'text-green-600' : ($voucher->status === 'partial' ? 'text-amber-600' : 'text-red-600') }}">
                             DUE DATE: {{ $voucher->due_date->format('d M, Y') }}
                         </p>
                     </div>
-                    
+
                     <div class="text-right flex flex-col items-end">
-                        <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Grand Total</p>
-                        <p class="text-3xl font-black text-gray-900">Rs. {{ number_format($voucher->amount) }}</p>
+                        @if($voucher->status === 'partial')
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider">Total Amount: <span class="text-gray-900">Rs. {{ number_format($voucher->amount) }}</span></p>
+                            <p class="text-xs text-emerald-600 font-bold uppercase tracking-wider">Amount Paid: Rs. {{ number_format($voucher->amount_paid) }}</p>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mt-1 mb-1">Balance Due</p>
+                            <p class="text-3xl font-black text-gray-900">Rs. {{ number_format($voucher->balance_due) }}</p>
+                        @else
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Grand Total</p>
+                            <p class="text-3xl font-black text-gray-900">Rs. {{ number_format($voucher->amount) }}</p>
+                        @endif
                     </div>
                 </div>
 

@@ -10,6 +10,7 @@ use App\Models\Classes;
 use App\Models\StaffProfile;
 use App\Models\Setting;
 use App\Models\FeeVoucher;
+use App\Models\Payment;
 use App\Models\Designation;
 use Illuminate\Support\Carbon;
 
@@ -36,23 +37,34 @@ class Dashboard extends Component
         $activeStaff = StaffProfile::where('employment_status', 'active')->count(); 
         $staffOnLeave = StaffProfile::where('employment_status', 'on_leave')->count();
 
-        $collectedThisMonth = FeeVoucher::where('status', 'paid')
-            ->whereMonth('updated_at', Carbon::now()->month)
-            ->whereYear('updated_at', Carbon::now()->year)
+        $collectedThisMonth = Payment::whereNull('voided_at')
+            ->whereMonth('paid_at', Carbon::now()->month)
+            ->whereYear('paid_at', Carbon::now()->year)
             ->sum('amount');
-            
-        $pendingDues = FeeVoucher::where('status', 'unpaid')
+
+        $activeStudentBilled = FeeVoucher::whereIn('status', ['unpaid', 'partial'])
             ->whereHas('student.studentProfile', function($query) {
                 $query->where('status', 'active');
             })
             ->sum('amount');
-        
-        $overdueInvoices = FeeVoucher::where('status', 'unpaid')
+
+        $activeStudentCollected = Payment::whereNull('voided_at')
+            ->whereHas('voucher', function($query) {
+                $query->whereIn('status', ['unpaid', 'partial'])
+                    ->whereHas('student.studentProfile', function($q) {
+                        $q->where('status', 'active');
+                    });
+            })
+            ->sum('amount');
+
+        $pendingDues = max(0, $activeStudentBilled - $activeStudentCollected);
+
+        $overdueInvoices = FeeVoucher::whereIn('status', ['unpaid', 'partial'])
             ->where('due_date', '<', Carbon::today())
             ->whereHas('student.studentProfile', function($query) {
                 $query->where('status', 'active');
             })
-            ->count(); 
+            ->count();
 
         // --- 3. DATA BREAKDOWNS ---
         $classBreakdown = Classes::withCount(['enrollments' => function ($query) use ($currentSession) {

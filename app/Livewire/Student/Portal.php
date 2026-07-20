@@ -20,7 +20,7 @@ class Portal extends Component
                 $q->where('academic_session', $currentSession)->with('class');
             },
             'feeVouchers' => function($q) {
-                $q->where('status', 'unpaid')->orderBy('due_date', 'asc');
+                $q->whereIn('status', ['unpaid', 'partial'])->with('payments')->orderBy('due_date', 'asc');
             }
         ]);
 

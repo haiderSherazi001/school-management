@@ -41,11 +41,6 @@
                         <a href="{{ route('dashboard') }}" wire:navigate class="text-sm font-bold text-indigo-600 hover:text-indigo-800">Go to Dashboard &rarr;</a>
                     @else
                         <a href="{{ route('login') }}" wire:navigate class="text-sm font-semibold text-gray-700 hover:text-gray-900 transition-colors hidden sm:block">Sign In</a>
-                        @if (Route::has('register'))
-                            <a href="{{ route('register') }}" wire:navigate class="inline-flex items-center justify-center px-5 py-2.5 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-gray-900 hover:bg-indigo-600 transition-all duration-200">
-                                Get Started
-                            </a>
-                        @endif
                     @endauth
                 </div>
             </div>
@@ -81,11 +76,6 @@
                         Access Your Workspace
                     </a>
                 @else
-                    @if (Route::has('register'))
-                        <a href="{{ route('register') }}" wire:navigate class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-base font-bold rounded-xl text-white bg-indigo-600 hover:bg-indigo-700 shadow-lg transition-colors">
-                            Initialize Your School
-                        </a>
-                    @endif
                     <a href="#contact" class="inline-flex items-center justify-center px-8 py-4 border border-gray-300 text-base font-bold rounded-xl text-gray-700 bg-white hover:bg-gray-50 shadow-sm transition-colors">
                         Request a Demo
                     </a>
@@ -255,8 +245,8 @@
                                 <svg class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
                             </div>
                             <div class="ml-4">
-                                <h4 class="text-base font-bold text-gray-900">Leave & Attendance Tracking</h4>
-                                <p class="mt-1 text-sm text-gray-500">Monitor daily staff availability with ease. Review digital leave requests, track absence quotas, and maintain accurate attendance records for term evaluations.</p>
+                                <h4 class="text-base font-bold text-gray-900">Staff Attendance Tracking</h4>
+                                <p class="mt-1 text-sm text-gray-500">Mark daily staff attendance in seconds and review a full monthly history at a glance to keep accurate records for term evaluations.</p>
                             </div>
                         </li>
 

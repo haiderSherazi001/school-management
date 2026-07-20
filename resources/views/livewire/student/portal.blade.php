@@ -37,15 +37,15 @@
                         </div>
                         <div class="flex-1">
                             <h3 class="text-lg font-bold text-red-800 mb-1">Pending Fee Vouchers</h3>
-                            <p class="text-sm text-red-700 mb-4">You have {{ $pendingFees->count() }} unpaid fee voucher(s). Please clear your dues at the administrative office.</p>
-                            
+                            <p class="text-sm text-red-700 mb-4">You have {{ $pendingFees->count() }} pending fee voucher(s). Please clear your dues at the administrative office.</p>
+
                             <div class="bg-white rounded border border-red-200 overflow-hidden">
                                 <table class="min-w-full divide-y divide-gray-200">
                                     <thead class="bg-gray-50">
                                         <tr>
                                             <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Month</th>
                                             <th class="px-4 py-2 text-left text-xs font-bold text-gray-500 uppercase">Due Date</th>
-                                            <th class="px-4 py-2 text-right text-xs font-bold text-gray-500 uppercase">Amount</th>
+                                            <th class="px-4 py-2 text-right text-xs font-bold text-gray-500 uppercase">Amount Due</th>
                                         </tr>
                                     </thead>
                                     <tbody class="divide-y divide-gray-200">
@@ -59,7 +59,12 @@
                                                         {{ \Carbon\Carbon::parse($fee->due_date)->format('d M, Y') }}
                                                     @endif
                                                 </td>
-                                                <td class="px-4 py-3 text-sm font-black text-gray-900 text-right">Rs. {{ number_format($fee->amount) }}</td>
+                                                <td class="px-4 py-3 text-sm font-black text-gray-900 text-right">
+                                                    Rs. {{ number_format($fee->balance_due) }}
+                                                    @if($fee->status === 'partial')
+                                                        <div class="text-[10px] text-emerald-600 font-black uppercase">Rs. {{ number_format($fee->amount_paid) }} already paid</div>
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @endforeach
                                     </tbody>
