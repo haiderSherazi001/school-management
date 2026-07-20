@@ -59,7 +59,14 @@
                                 <input type="number" wire:model="default_salary" placeholder="e.g. 40000" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
                                 <p class="text-xs text-gray-500 mt-1">This will auto-fill when adding new staff, but can be overridden.</p>
                                 @error('default_salary') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
-                            </div>  
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Paid Leave Days / Month</label>
+                                <input type="number" wire:model="paid_leave_days_per_month" placeholder="e.g. 2" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
+                                <p class="text-xs text-gray-500 mt-1">Single-day "Leave" attendance beyond this monthly quota is deducted from pay like an absence. Individual staff can override this.</p>
+                                @error('paid_leave_days_per_month') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                            </div>
 
                             <div class="mb-6 flex items-center">
                                 <input type="checkbox" wire:model="is_active" id="is_active" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 h-4 w-4">
@@ -93,6 +100,7 @@
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Job Title</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Department</th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Default Salary</th>
+                                        <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Leave Days/Mo</th>
                                         <th scope="col" class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
                                         <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
                                     </tr>
@@ -109,6 +117,9 @@
                                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                                 {{ $designation->default_salary }}
                                             </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
+                                                {{ $designation->paid_leave_days_per_month }}
+                                            </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-center">
                                                 @if($designation->is_active)
                                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Active</span>
@@ -124,7 +135,7 @@
                                         </tr>
                                     @empty
                                         <tr>
-                                            <td colspan="4" class="px-6 py-12 text-center text-gray-500 text-sm">
+                                            <td colspan="6" class="px-6 py-12 text-center text-gray-500 text-sm">
                                                 <p>No designations added yet.</p>
                                                 <p class="text-xs text-gray-400 mt-1">Add roles like 'Principal', 'Teacher', or 'Accountant' to get started.</p>
                                             </td>

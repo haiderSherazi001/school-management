@@ -75,13 +75,28 @@
 
                     <div>
                         <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Employment Status</label>
-                        <select wire:model="employment_status" class="w-full rounded-xl border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition sm:text-sm font-bold">
+                        <select wire:model.live="employment_status" class="w-full rounded-xl border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition sm:text-sm font-bold">
                             <option value="active">Active (Employed)</option>
-                            <option value="on_leave">On Leave</option>
+                            <option value="on_leave">On Extended Leave</option>
                             <option value="resigned">Resigned</option>
                             <option value="terminated">Terminated</option>
                         </select>
                         @error('employment_status') <span class="text-red-500 text-[10px] font-black mt-1.5 block uppercase">{{ $message }}</span> @enderror
+                    </div>
+
+                    @if($employment_status === 'on_leave')
+                        <div class="md:col-span-2">
+                            <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Leave Reason / Note (Optional)</label>
+                            <textarea wire:model="leave_note" rows="2" placeholder="e.g. Maternity leave until March, approved by principal..." class="w-full rounded-xl border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition sm:text-sm"></textarea>
+                            @error('leave_note') <span class="text-red-500 text-[10px] font-black mt-1.5 block uppercase">{{ $message }}</span> @enderror
+                        </div>
+                    @endif
+
+                    <div>
+                        <label class="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Paid Leave Days Override (Optional)</label>
+                        <input type="number" wire:model="paid_leave_days_per_month" placeholder="Blank = use designation default" class="w-full rounded-xl border-gray-200 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-50 transition sm:text-sm font-bold">
+                        <p class="mt-2 text-[10px] font-medium text-gray-400">Monthly quota of single-day "Leave" attendance before it starts deducting pay. Leave blank to use the designation's default.</p>
+                        @error('paid_leave_days_per_month') <span class="text-red-500 text-[10px] font-black mt-1.5 block uppercase">{{ $message }}</span> @enderror
                     </div>
 
                     <div>

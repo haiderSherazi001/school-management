@@ -34,9 +34,24 @@
                         <span class="inline-flex items-center rounded-lg bg-blue-50 px-3 py-1 text-xs font-black text-blue-700 border border-blue-100 uppercase tracking-wider">
                             {{ $staff->staffProfile->designation->title ?? 'Role Unassigned' }}
                         </span>
-                        
-                        <span class="inline-flex items-center rounded-lg bg-emerald-50 px-3 py-1 text-xs font-black text-emerald-700 border border-emerald-100 uppercase tracking-wider">
-                            Active Employee
+
+                        @php
+                            $employmentStatusColors = [
+                                'active' => 'bg-emerald-50 text-emerald-700 border-emerald-100',
+                                'on_leave' => 'bg-amber-50 text-amber-700 border-amber-100',
+                                'resigned' => 'bg-gray-100 text-gray-600 border-gray-200',
+                                'terminated' => 'bg-red-50 text-red-700 border-red-100',
+                            ];
+                            $employmentStatusLabels = [
+                                'active' => 'Active Employee',
+                                'on_leave' => 'On Extended Leave',
+                                'resigned' => 'Resigned',
+                                'terminated' => 'Terminated',
+                            ];
+                            $employmentStatus = $staff->staffProfile->employment_status ?? 'active';
+                        @endphp
+                        <span class="inline-flex items-center rounded-lg px-3 py-1 text-xs font-black border uppercase tracking-wider {{ $employmentStatusColors[$employmentStatus] }}">
+                            {{ $employmentStatusLabels[$employmentStatus] ?? ucfirst(str_replace('_', ' ', $employmentStatus)) }}
                         </span>
                     </div>
                 </div>
@@ -65,6 +80,17 @@
                         </div>
                     </div>
                 </div>
+
+                @if($staff->staffProfile->employment_status === 'on_leave' && $staff->staffProfile->leave_note)
+                    <div class="bg-amber-50 shadow-sm rounded-2xl border border-amber-100 overflow-hidden">
+                        <div class="px-6 py-4 bg-amber-100/50 border-b border-amber-100">
+                            <h3 class="text-xs font-black text-amber-700 uppercase tracking-widest">Leave Note</h3>
+                        </div>
+                        <div class="p-6">
+                            <p class="text-sm font-medium text-amber-900 italic">"{{ $staff->staffProfile->leave_note }}"</p>
+                        </div>
+                    </div>
+                @endif
 
                 <div class="bg-white shadow-sm rounded-2xl border border-gray-100 overflow-hidden">
                     <div class="px-6 py-4 bg-gray-50/30 border-b border-gray-50">

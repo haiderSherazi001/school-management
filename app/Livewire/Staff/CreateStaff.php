@@ -37,6 +37,12 @@ class CreateStaff extends Component
     #[Validate('required|in:active,on_leave,resigned,terminated')]
     public $employment_status = 'active';
 
+    #[Validate('nullable|integer|min:0|max:31')]
+    public $paid_leave_days_per_month = null;
+
+    #[Validate('nullable|string|max:1000')]
+    public $leave_note = '';
+
     #[Validate('required|string')]
     public $qualification = '';
 
@@ -84,8 +90,10 @@ class CreateStaff extends Component
 
             $user->staffProfile()->create([
                 'cnic' => $this->cnic,
-                'designation_id' => $this->designation_id, 
-                'employment_status' => $this->employment_status, 
+                'designation_id' => $this->designation_id,
+                'employment_status' => $this->employment_status,
+                'paid_leave_days_per_month' => $this->paid_leave_days_per_month !== '' ? $this->paid_leave_days_per_month : null,
+                'leave_note' => $this->leave_note ?: null,
                 'qualification' => $this->qualification,
                 'phone' => $this->phone,
                 'salary' => $this->salary,
